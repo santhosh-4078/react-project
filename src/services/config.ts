@@ -14,7 +14,7 @@ export const APICONSTANT = {
   LOGIN: "auth/login",
   STUDENTS: "students",
   PROFILE: "auth/profile",
-  viewUsers: "admin/users",
+  viewUsers: "admin/cuisine",
 } as const
 
 export type APIKeys = keyof typeof APICONSTANT;
