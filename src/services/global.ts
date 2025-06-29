@@ -18,7 +18,7 @@ export const getApiMethos = async (
   const config = {
     signal,
     headers: {
-      Authorization: token || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzIwZDczM2Q2YjE1NTViOTc5MWM5OTMiLCJlbWFpbCI6ImFkbWluQGZvb2RzdGFyLmNvbSIsIm5hbWUiOiJhYnNzIiwidHlwZSI6IkFETUlOIiwiaWF0IjoxNzUxMDMzMTc2LCJleHAiOjE3NTM2MjUxNzZ9.kZpvRLO4plfUDsXnzzsiPdoUdc6SJM3G2Q1xSyE6NGE",
+      Authorization: token || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzIwZDczM2Q2YjE1NTViOTc5MWM5OTMiLCJlbWFpbCI6ImFkbWluQGZvb2RzdGFyLmNvbSIsIm5hbWUiOiJGb29kc3RhciIsInR5cGUiOiJBRE1JTiIsImlhdCI6MTc1MTIwMjUyNiwiZXhwIjoxNzUzNzk0NTI2fQ.hgBVr3H_wennUiRhmj4eQ4aHn5Ak_gkr6gvRDk2ieKU",
     },
   };
 
@@ -26,50 +26,62 @@ export const getApiMethos = async (
   return response.data;
 };
 
-export const putApiMethod = async (data: any) => {
-  const api = APIURLS.baseUrl + data.url.apiUrl;
-  const token = await localStorage.getItem("token");
+export const postApiMethod = async (
+  context: QueryFunctionContext<[string, string, unknown]>
+) => {
+  const [_, apiConstant, body] = context.queryKey;
+  const signal = context.signal;
+
+  const api = `${APIURLS.baseUrl}${apiConstant}`;
+  const token = localStorage.getItem("token");
+
   const config = {
+    signal,
     headers: {
-      Authorization: token,
+      Authorization: token || "",
     },
   };
-  const response = await axios.put(api, data.body, config);
-  if (response.type === 'success') {
-    throw response.message;
-  }
+
+  const response = await axios.post(api, body, config);
   return response.data;
 };
 
-export const postApiMethod = async (data: any) => {
-  try {
-    const api = APIURLS.baseUrl + data.url.apiUrl;
-    const token = await localStorage.getItem("token");
-    const config = {
-      headers: {
-        Authorization: token,
-      },
-    };
-    const response = await axios.post(api, data.body, config);
-    if (response.type === "success" || response.status === 200 || response.status === 201) {
-      return response.data;
-    } else {
-      return response;
-    }
-  } catch (error: any) {
-    throw new Error(error, { cause: error });
-  }
-};
+export const putApiMethod = async (
+  context: QueryFunctionContext<[string, string, unknown]>
+) => {
+  const [_, apiConstant, body] = context.queryKey;
+  const signal = context.signal;
 
-export const deleteApiMethod = async (data: any) => {
-  const api = APIURLS.baseUrl + data.url;
+  const api = `${APIURLS.baseUrl}${apiConstant}`;
   const token = localStorage.getItem("token");
+
   const config = {
+    signal,
     headers: {
-      Authorization: token,
+      Authorization: token || "",
     },
   };
-  const Id = data ? data.id : null;
-  const response = await axios.delete(`${api}/${Id}`, config);
+
+  const response = await axios.put(api, body, config);
+  return response.data;
+};
+
+export const deleteApiMethod = async (
+  context: QueryFunctionContext<[string, string, string | number]>
+) => {
+  const [_, apiConstant, id] = context.queryKey;
+  const signal = context.signal;
+
+  const api = `${APIURLS.baseUrl}${apiConstant}/${id}`;
+  const token = localStorage.getItem("token");
+
+  const config = {
+    signal,
+    headers: {
+      Authorization: token || "",
+    },
+  };
+
+  const response = await axios.delete(api, config);
   return response.data;
 };

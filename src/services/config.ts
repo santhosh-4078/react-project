@@ -1,7 +1,8 @@
 const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3001/";
 
 export const APIURLS = {
-  baseUrl: BASE_URL.endsWith("v1/") ? BASE_URL : BASE_URL + "v1/",
+  // baseUrl: BASE_URL.endsWith("v1/") ? BASE_URL : BASE_URL + "v1/",
+  baseUrl: BASE_URL.endsWith("/") ? BASE_URL : BASE_URL + "/",
   imageUrl: BASE_URL,
 };
 
@@ -11,7 +12,7 @@ export const APPCONFIG = {
 };
 
 export const APICONSTANT = {
-  LOGIN: "auth/login",
+  LOGIN: "api/users/verifylogin",
   STUDENTS: "students",
   PROFILE: "auth/profile",
   viewUsers: "admin/cuisine",
