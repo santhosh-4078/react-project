@@ -14,13 +14,11 @@ export const getApiMethos = async (
     : `${APIURLS.baseUrl}${apiConstant}`;
 
   const token = localStorage.getItem("token");
-  console.log(token);
-  
 
   const config = {
     signal,
     headers: {
-      Authorization: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzIwZDczM2Q2YjE1NTViOTc5MWM5OTMiLCJlbWFpbCI6ImFkbWluQGZvb2RzdGFyLmNvbSIsIm5hbWUiOiJhYnNzIiwidHlwZSI6IkFETUlOIiwiaWF0IjoxNzUxMDMyNzUxLCJleHAiOjE3NTM2MjQ3NTF9.icfRPiNN_vnBWQ2gNleZKGsfgV_DVH38bgTusa4Dpls",
+      Authorization: token || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzIwZDczM2Q2YjE1NTViOTc5MWM5OTMiLCJlbWFpbCI6ImFkbWluQGZvb2RzdGFyLmNvbSIsIm5hbWUiOiJhYnNzIiwidHlwZSI6IkFETUlOIiwiaWF0IjoxNzUxMDMzMTc2LCJleHAiOjE3NTM2MjUxNzZ9.kZpvRLO4plfUDsXnzzsiPdoUdc6SJM3G2Q1xSyE6NGE",
     },
   };
 

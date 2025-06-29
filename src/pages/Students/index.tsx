@@ -9,16 +9,16 @@ type Student = {
 
 const columns: ColumnDef<Student>[] = [
   {
-    accessorKey: "id",
-    header: "ID",
+    accessorKey: "_id",
+    header: "_id",
   },
   {
     accessorKey: "name",
     header: "Name",
   },
   {
-    accessorKey: "email",
-    header: "Email",
+    accessorKey: "createdAt",
+    header: "createdAt",
   },
 ];
 
