@@ -8,15 +8,16 @@ import {
   ChevronDownIcon,
   GridIcon,
   HorizontaLDots,
-  ListIcon,
-  PageIcon,
   PieChartIcon,
   PlugInIcon,
-  TableIcon,
-  UserCircleIcon,
+  UserIcon,
+  GroupIcon,
+  DocsIcon,
+  FileIcon,
+  ChatIcon,
 } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
-import SidebarWidget from "./SidebarWidget";
+// import SidebarWidget from "./SidebarWidget";
 
 type NavItem = {
   name: string;
@@ -32,46 +33,45 @@ const navItems: NavItem[] = [
     path: "/"
   },
   {
-    icon: <GridIcon />,
+    icon: <UserIcon />,
     name: "Student",
     path: "/student"
   },
   {
-    icon: <GridIcon />,
+    icon: <GroupIcon />,
     name: "Instructors",
     path: "/instructors"
   },
   {
-    icon: <GridIcon />,
+    icon: <DocsIcon />,
     name: "Courses",
     path: "/courses"
   },
   {
-    icon: <GridIcon />,
+    icon: <BoxCubeIcon />,
     name: "Batches",
     path: "/batches"
   },
   {
-    icon: <GridIcon />,
+    icon: <CalenderIcon />,
     name: "Attendance",
     path: "/attendance"
   },
   {
-    icon: <GridIcon />,
+    icon: <PlugInIcon />,
     name: "Settings",
     path: "/settings"
   },
   {
-    icon: <GridIcon />,
+    icon: <FileIcon />,
     name: "Logs & Reports",
     path: "/logs"
   },
   {
-    icon: <GridIcon />,
-    name: " Support / Help",
+    icon: <ChatIcon />,
+    name: "Support / Help",
     path: "/support"
-  },
-
+  }
 ];
 
 const othersItems: NavItem[] = [

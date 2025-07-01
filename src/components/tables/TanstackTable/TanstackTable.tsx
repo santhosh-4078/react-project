@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import {
   useReactTable,
   getCoreRowModel,
@@ -15,16 +15,52 @@ interface TanstackTableProps<T> {
   queryString?: string;
 }
 
+const SkeletonLoader = ({ columns, rows = 6 }: { columns: number; rows?: number }) => (
+  <table className="min-w-full">
+    <thead>
+      <tr>
+        {Array.from({ length: columns }).map((_, i) => (
+          <th
+            key={i}
+            className="border-b border-gray-100 p-2 text-gray-800 dark:text-white/90 text-theme-xs"
+          >
+            <div className="h-4 w-24 bg-gray-300 dark:bg-gray-600 rounded animate-pulse" />
+          </th>
+        ))}
+      </tr>
+    </thead>
+    <tbody>
+      {Array.from({ length: rows }).map((_, rowIndex) => (
+        <tr key={rowIndex}>
+          {Array.from({ length: columns }).map((_, colIndex) => (
+            <td
+              key={colIndex}
+              className="px-4 py-3 text-gray-800 text-start text-theme-sm dark:text-white/90"
+            >
+              <div className="h-4 w-full bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+            </td>
+          ))}
+        </tr>
+      ))}
+    </tbody>
+  </table>
+);
+
 const TanstackTable = <T,>({
   listAPI,
   columns,
   queryString = "",
 }: TanstackTableProps<T>) => {
   const [page, setPage] = useState(1);
-  const pageSize = 10;
+  const [pageSize, setPageSize] = useState(10);
 
-  const query_string =
-    `page=${page}&limit=${pageSize}` + (queryString ? `&${queryString}` : "");
+  const query_string = useMemo(() => {
+    const params = new URLSearchParams(queryString);
+    params.set("page", page.toString());
+    params.set("limit", pageSize.toString());
+    return params.toString();
+  }, [page, pageSize, queryString]);
+
   const { data, isLoading } = useReactQuery<T>(listAPI, query_string);
 
   const totalCount = data?.totalCount || 0;
@@ -51,65 +87,88 @@ const TanstackTable = <T,>({
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
   });
-  
-  if (isLoading) return <p>Loading...</p>;
+
+  if (isLoading) {
+    return <SkeletonLoader columns={columns.length} rows={6} />;
+  }
+
+  const hasData = data?.data && data.data.length > 0;
 
   return (
     <div>
-      <table className="min-w-full border">
-        <thead>
-          {table.getHeaderGroups().map((group) => (
-            <tr key={group.id}>
-              {group.headers.map((header) => (
-                <th key={header.id} className="border p-2">
-                  {flexRender(header.column.columnDef.header, header.getContext())}
-                </th>
+      {hasData ? (
+        <div>
+          <table className="min-w-full">
+            <thead>
+              {table.getHeaderGroups().map((group) => (
+                <tr key={group.id}>
+                  {group.headers.map((header) => (
+                    <th
+                      key={header.id}
+                      className="border-b border-gray-100 dark:border-white/[0.05] p-2 text-gray-800 dark:text-white/90 text-theme-xs"
+                    >
+                      {flexRender(header.column.columnDef.header, header.getContext())}
+                    </th>
+                  ))}
+                </tr>
               ))}
-            </tr>
-          ))}
-        </thead>
-        <tbody>
-          {table.getRowModel().rows.length > 0 ? (
-            table.getRowModel().rows.map((row) => (
-              <tr key={row.id}>
-                {row.getVisibleCells().map((cell) => (
-                  <td key={cell.id} className="border p-2">
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </td>
-                ))}
-              </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan={columns.length} className="text-center py-4">
-                No data found
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
-
-      <div className="flex justify-between items-center mt-4">
-        <p className="text-sm text-gray-600">
-          Page {page} of {totalPages}
-        </p>
-        <div className="flex gap-2">
-          <button
-            onClick={() => setPage((p) => Math.max(p - 1, 1))}
-            disabled={page === 1}
-            className="px-3 py-1 border rounded disabled:opacity-50"
-          >
-            Prev
-          </button>
-          <button
-            onClick={() => setPage((p) => p + 1)}
-            disabled={page >= totalPages}
-            className="px-3 py-1 border rounded disabled:opacity-50"
-          >
-            Next
-          </button>
+            </thead>
+            <tbody>
+              {table.getRowModel().rows.map((row) => (
+                <tr key={row.id}>
+                  {row.getVisibleCells().map((cell) => (
+                    <td
+                      key={cell.id}
+                      className="px-4 py-3 text-gray-800 text-start text-theme-sm dark:text-white/90"
+                    >
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <div className="flex justify-between items-center mt-4">
+            <div className="flex gap-2">
+              <p className="text-gray-800 text-theme-sm dark:text-white/90">
+                Page {page} of {totalPages}
+              </p>
+              <select
+                className="bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-white/90 text-sm rounded"
+                value={pageSize}
+                onChange={(e) => {
+                  setPage(1);
+                  setPageSize(Number(e.target.value));
+                }}
+              >
+                <option value={10}>10</option>
+                <option value={15}>15</option>
+                <option value={20}>20</option>
+              </select>
+            </div>
+            <div className="flex gap-2 items-center">
+              <button
+                onClick={() => setPage((p) => Math.max(p - 1, 1))}
+                disabled={page === 1}
+                className="px-4 py-2 bg-gray-100 dark:bg-gray-800 dark:text-white/90 text-sm rounded hover:bg-gray-200 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition"
+              >
+                Prev
+              </button>
+              <button
+                onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
+                disabled={page >= totalPages}
+                className="px-4 py-2 bg-gray-100 dark:bg-gray-800 dark:text-white/90 text-sm rounded hover:bg-gray-200 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition"
+              >
+                Next
+              </button>
+            </div>
+          </div>
         </div>
-      </div>
+      ) : (
+        <p className="text-center px-4 py-3 text-gray-800 text-theme-sm dark:text-white/90">
+          No data found
+        </p>
+      )}
     </div>
   );
 };

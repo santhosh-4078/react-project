@@ -6,19 +6,27 @@ import { QueryFunctionContext } from "@tanstack/react-query";
 export const getApiMethos = async (
   context: QueryFunctionContext<[string, string, string?]>
 ) => {
-  const [_, apiConstant, query_string] = context.queryKey;
+  const [, apiConstant, query_string = ""] = context.queryKey;
   const signal = context.signal;
 
-  const api = query_string
-    ? `${APIURLS.baseUrl}${apiConstant}?${query_string}`
-    : `${APIURLS.baseUrl}${apiConstant}`;
+  // Safely merge `user_group=instructor` with existing query string
+  const hasQuery = query_string.length > 0;
+  const query = hasQuery
+    ? `user_group=instructor&${query_string}`
+    : `user_group=instructor`;
+
+  const api = `${APIURLS.baseUrl}${apiConstant}?${query}`;
 
   const token = localStorage.getItem("token");
+  if (!token) {
+    throw new Error("No auth token found");
+  }
 
   const config = {
     signal,
     headers: {
-      Authorization: token || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzIwZDczM2Q2YjE1NTViOTc5MWM5OTMiLCJlbWFpbCI6ImFkbWluQGZvb2RzdGFyLmNvbSIsIm5hbWUiOiJGb29kc3RhciIsInR5cGUiOiJBRE1JTiIsImlhdCI6MTc1MTIwMjUyNiwiZXhwIjoxNzUzNzk0NTI2fQ.hgBVr3H_wennUiRhmj4eQ4aHn5Ak_gkr6gvRDk2ieKU",
+      // application/x-www-form-urlencoded is unnecessary unless POST-ing body
+      Authorization: token,
     },
   };
 

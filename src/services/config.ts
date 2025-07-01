@@ -15,6 +15,8 @@ export const APICONSTANT = {
   LOGIN: "api/users/verifylogin",
   STUDENTS: "students",
   PROFILE: "auth/profile",
+  InstructorsList: "api/users/list",
+  CreateInstructors: "api/users/createusers",
   viewUsers: "admin/cuisine",
 } as const
 

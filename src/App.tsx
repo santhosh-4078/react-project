@@ -21,6 +21,7 @@ import { ScrollToTop } from "./components/common/ScrollToTop";
 import Home from "./pages/Dashboard/Home";
 import Student from "./pages/Students";
 import AuthGuard from "./services/authGuard";
+import InstructorsRoutes from "./pages/Instructors/routes"
 
 export default function App() {
   return (
@@ -33,12 +34,14 @@ export default function App() {
             <Route element={<AppLayout />}>
               <Route index path="/" element={<Home />} />
               <Route index path="/student" element={<Student />} />
+              <Route index path="/instructors/*" element={<InstructorsRoutes />} />
             </Route>
 
             {/* Auth Layout */}
             <Route path="/signin" element={<SignIn />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/reset-password" element={<ForgotPassword />} />
+            
 
             {/* Fallback Route */}
             <Route path="*" element={<NotFound />} />
