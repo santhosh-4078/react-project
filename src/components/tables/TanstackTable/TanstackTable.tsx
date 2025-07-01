@@ -63,8 +63,9 @@ const TanstackTable = <T,>({
 
   const { data, isLoading } = useReactQuery<T>(listAPI, query_string);
 
-  const totalCount = data?.totalCount || 0;
-  const totalPages = Math.ceil(totalCount / pageSize);
+  // ✅ FIXED: Read correct pagination structure
+  //const totalCount = data?.pagination?.totalUsers || 0;
+  const totalPages = data?.pagination?.totalPages || 1;
 
   const table = useReactTable({
     data: data?.data || [],
@@ -97,7 +98,7 @@ const TanstackTable = <T,>({
   return (
     <div>
       {hasData ? (
-        <div>
+        <div className="w-full overflow-x-auto">
           <table className="min-w-full">
             <thead>
               {table.getHeaderGroups().map((group) => (
@@ -105,7 +106,7 @@ const TanstackTable = <T,>({
                   {group.headers.map((header) => (
                     <th
                       key={header.id}
-                      className="border-b border-gray-100 dark:border-white/[0.05] p-2 text-gray-800 dark:text-white/90 text-theme-xs"
+                      className="border-b text-start border-gray-100 dark:border-white/[0.05] p-2 text-gray-800 dark:text-white/90 text-theme-xs"
                     >
                       {flexRender(header.column.columnDef.header, header.getContext())}
                     </th>
@@ -128,7 +129,8 @@ const TanstackTable = <T,>({
               ))}
             </tbody>
           </table>
-          <div className="flex justify-between items-center mt-4">
+
+          <div className="flex justify-between items-center mt-4 flex-wrap gap-4">
             <div className="flex gap-2">
               <p className="text-gray-800 text-theme-sm dark:text-white/90">
                 Page {page} of {totalPages}
@@ -141,11 +143,12 @@ const TanstackTable = <T,>({
                   setPageSize(Number(e.target.value));
                 }}
               >
+                <option value={3}>3</option>
+                <option value={5}>5</option>
                 <option value={10}>10</option>
-                <option value={15}>15</option>
-                <option value={20}>20</option>
               </select>
             </div>
+
             <div className="flex gap-2 items-center">
               <button
                 onClick={() => setPage((p) => Math.max(p - 1, 1))}

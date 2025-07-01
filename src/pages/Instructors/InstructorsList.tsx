@@ -3,9 +3,12 @@ import { ColumnDef } from "@tanstack/react-table";
 
 type Instructors = {
   id: number;
-  name: string;
+  first_name: string;
+  last_name: string;
   email: string;
-}
+  phone: string;
+  profile: string;
+};
 
 const pageDetails = {
   title:"ViewInstructors",
@@ -14,17 +17,39 @@ const pageDetails = {
 
 const columns: ColumnDef<Instructors>[] = [
   {
-    accessorKey: "_id",
-    header: "_id",
+    accessorKey: "profile",
+    header: "Profile",
+    cell: ({ getValue }) => {
+      const url = getValue() as string;
+      return (
+        <img
+          src={url}
+          alt="Profile"
+          style={{ width: "40px", height: "40px", borderRadius: "50%" }}
+        />
+      );
+    },
   },
   {
-    accessorKey: "name",
+    accessorKey: "id",
+    header: "ID",
+  },
+  {
     header: "Name",
+    cell: ({ row }) => {
+      const { first_name, last_name } = row.original;
+      return `${first_name} ${last_name}`;
+    },
   },
   {
-    accessorKey: "createdAt",
-    header: "createdAt",
+    accessorKey: "email",
+    header: "Email",
   },
+  {
+    accessorKey: "phone",
+    header: "Phone",
+  },
+  
 ];
 
 export default function InstructorsList() {
