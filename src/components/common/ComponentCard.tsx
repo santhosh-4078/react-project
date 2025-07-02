@@ -10,9 +10,10 @@ interface ComponentCardProps<T> {
   title: string;
   className?: string;
   desc?: string;
-  listAPI: APIKeys;
-  addPage: string;
-  columns: ColumnDef<T, unknown>[];
+  listAPI?: APIKeys;
+  addPage?: string;
+  columns?: ColumnDef<T, unknown>[];
+  children?: React.ReactNode;
 }
 
 const ComponentCard = <T,>({
@@ -22,6 +23,7 @@ const ComponentCard = <T,>({
   listAPI,
   columns,
   addPage,
+  children,
 }: ComponentCardProps<T>) => {
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
@@ -31,8 +33,8 @@ const ComponentCard = <T,>({
   };
 
   const handleAddPage = () => {
-    navigate(addPage)
-  }
+    if (addPage) navigate(addPage);
+  };
 
   const params = new URLSearchParams();
   if (search) params.set("filter_name", search);
@@ -45,26 +47,29 @@ const ComponentCard = <T,>({
           <h3 className="text-base font-medium text-gray-800 dark:text-white/90">{title}</h3>
           {desc && <p className="text-sm text-gray-500 dark:text-white/90">{desc}</p>}
         </div>
-        <div className="flex items-center gap-2">
-          <Input
-            type="text"
-            placeholder="Search..."
-            value={search}
-            onChange={handleSearchChange}
-          />
-          <Button
-            onClick={handleAddPage}
-          >
-            Add
-          </Button>
-        </div>
+        {listAPI && columns && addPage && (
+          <div className="flex items-center gap-2">
+            <Input
+              type="text"
+              placeholder="Search..."
+              value={search}
+              onChange={handleSearchChange}
+            />
+            <Button onClick={handleAddPage}>Add</Button>
+          </div>
+        )}
       </div>
+
       <div className="p-4 sm:p-6">
-        <TanstackTable<T>
-          listAPI={listAPI}
-          columns={columns}
-          queryString={queryString}
-        />
+        {listAPI && columns ? (
+          <TanstackTable<T>
+            listAPI={listAPI}
+            columns={columns}
+            queryString={queryString}
+          />
+        ) : (
+          children
+        )}
       </div>
     </div>
   );
