@@ -1,7 +1,6 @@
-// ✅ hooks/useApiMutation.ts
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router";
-import { apiMethod } from "../services/global";
+import { apiMethod } from "../../services/global";
 
 type HttpMethod = "post" | "put" | "patch" | "delete";
 
@@ -18,18 +17,16 @@ export default function useApiMutation(
 
   return useMutation({
     mutationFn: async ({ url, body }: ApiMutationParams) => {
-      console.log(body);
-      
       return await apiMethod(method, url.apiUrl, body);
     },
     onSuccess: (data) => {
-      console.log(`✅ ${method.toUpperCase()} success:`, data);
+      console.log(`${method.toUpperCase()} success:`, data);
       if (onSuccessRedirect) {
         navigate(onSuccessRedirect);
       }
     },
     onError: (error) => {
-      console.error(`❌ ${method.toUpperCase()} error:`, error);
+      console.error(`${method.toUpperCase()} error:`, error);
     },
   });
 }

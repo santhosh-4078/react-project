@@ -29,7 +29,7 @@ import Label from "../../components/form/Label";
 import Input from "../../components/form/input/InputField";
 import Button from "../../components/ui/button/Button";
 import { ChevronLeftIcon } from "../../icons";
-import useApiMutation from "../../hooks/useApiMutation";
+import useApiMutation from "../../hooks/Mutations/useApiMutation";
 import { APICONSTANT } from "../../services/config";
 import FileInput from "../../components/form/input/FileInput";
 
