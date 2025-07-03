@@ -16,21 +16,21 @@ export interface ApiResponse {
   };
 }
 
-export default function usePatchMutation(
+export default function usePutMutation(
   onSuccessRedirect?: string
 ): UseMutationResult<ApiResponse, unknown, MutationParams> {
   const navigate = useNavigate();
 
   return useMutation({
     mutationFn: async ({ url, body }) => {
-      return await apiMethod("patch", url.apiUrl, body);
+      return await apiMethod("put", url.apiUrl, body);
     },
     onSuccess: (data) => {
-      console.log("✅ PATCH success:", data);
+      console.log("PUT success:", data);
       if (onSuccessRedirect) navigate(onSuccessRedirect);
     },
     onError: (error) => {
-      console.error("PATCH error:", error);
+      console.error("PUT error:", error);
     },
   });
 }

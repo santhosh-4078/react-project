@@ -38,7 +38,7 @@ export const getApiMethos = async (
 // POST API Method (non-generic)
 export const postApiMethod = async (
   apiUrl: string,
-  body: Record<string, unknown> | FormData
+  body: Record<string, unknown> | FormData | URLSearchParams
 ) => {
   try {
     const url = `${APIURLS.baseUrl}${apiUrl}`;

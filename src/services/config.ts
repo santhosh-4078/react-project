@@ -15,10 +15,12 @@ export const APICONSTANT = {
   LOGIN: "api/users/verifylogin",
   STUDENTS: "students",
   PROFILE: "auth/profile",
-  InstructorsList: "api/users/list",
+  GET_INSTRUCTOR: "api/users/list",
   CREATE_INSTRUCTOR: "api/users/createusers",
   UPDATE_INSTRUCTOR: "api/users/viewuser",
-  viewUsers: "admin/cuisine",
+  DELETE_INSTRUCTOR: "api/users/deleteuser",
+  GET_COUNTRY: "api/users/getcountries",
+  GET_STATE: "api/users/getstates",
 } as const
 
 export type APIKeys = keyof typeof APICONSTANT;

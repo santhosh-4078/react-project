@@ -26,7 +26,7 @@ export default function useDeleteMutation(
       return await apiMethod("delete", url.apiUrl, body);
     },
     onSuccess: (data) => {
-      console.log("✅ DELETE success:", data);
+      console.log("DELETE success:", data);
       if (onSuccessRedirect) navigate(onSuccessRedirect);
     },
     onError: (error) => {

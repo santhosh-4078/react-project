@@ -1,7 +1,10 @@
 import { useNavigate } from "react-router";
 import { ColumnDef } from "@tanstack/react-table";
+import { useQueryClient } from "@tanstack/react-query";
 import ComponentCard from "../../components/common/ComponentCard";
 import RowActionsMenu from "../../components/tableActions/RowActionsMenu";
+import { APICONSTANT } from "../../services/config";
+import usePostMutation from "../../hooks/Mutations/usePostMtation";
 
 type Instructors = {
   id: number;
@@ -19,14 +22,33 @@ const pageDetails = {
 
 export default function InstructorsList() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
-  const handleDelete = (id: number, name: string) => {
-    const confirmDelete = window.confirm(`Are you sure you want to delete ${name}?`);
-    if (confirmDelete) {
-      console.log("Deleting instructor ID:", id);
-      // TODO: Replace with actual delete API call
+  //initialize delete mutation hook
+  const deleteMutation = usePostMutation();
+
+  const handleDelete = async (id: number) => {
+  try {
+    const params = new URLSearchParams();
+    params.append("user_group", "instructor");
+    params.append("id", id.toString());
+
+    const response = await deleteMutation.mutateAsync({
+      url: { apiUrl: APICONSTANT.DELETE_INSTRUCTOR },
+      body: params,
+    });
+
+    if(response?.success) {
+      await queryClient.invalidateQueries({
+        queryKey: ["GET_INSTRUCTOR"]
+      })
     }
-  };
+
+    // Optional: showToast("Instructor deleted successfully");
+  } catch (error) {
+    console.error("Error deleting instructor:", error);
+  }
+};
 
   const columns: ColumnDef<Instructors>[] = [
     {
@@ -72,7 +94,9 @@ export default function InstructorsList() {
             onEdit={() =>
               navigate("instructors-form", { state: instructor })
             }
-            onDelete={() => handleDelete(instructor.id, instructor.first_name)}
+            onDelete={() =>
+              handleDelete(instructor.id)
+            }
           />
         );
       },
@@ -83,7 +107,7 @@ export default function InstructorsList() {
     <div>
       <ComponentCard<Instructors>
         title={pageDetails.title}
-        listAPI="InstructorsList"
+        listAPI="GET_INSTRUCTOR"
         addPage={pageDetails.addPage}
         columns={columns}
       />
