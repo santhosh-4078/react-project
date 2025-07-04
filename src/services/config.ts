@@ -21,6 +21,10 @@ export const APICONSTANT = {
   DELETE_INSTRUCTOR: "api/users/deleteuser",
   GET_COUNTRY: "api/users/getcountries",
   GET_STATE: "api/users/getstates",
+  GET_COURSES: "api/courses/list",
+  CREATE_COURSE: "api/courses/create",
+  UPDATE_COURSE: "api/courses/update",
+  DELETE_COURSE: "api/courses/delete",
 } as const
 
 export type APIKeys = keyof typeof APICONSTANT;

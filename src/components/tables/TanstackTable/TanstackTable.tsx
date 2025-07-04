@@ -62,13 +62,14 @@ const TanstackTable = <T,>({
   }, [page, pageSize, queryString]);
 
   const { data, isLoading } = useReactQuery<T>(listAPI, query_string);
-
   // ✅ FIXED: Read correct pagination structure
   //const totalCount = data?.pagination?.totalUsers || 0;
   const totalPages = data?.pagination?.totalPages || 1;
+  const tableData = data?.data || data?.datas
+  console.log("data", data);
 
   const table = useReactTable({
-    data: data?.data || [],
+    data: tableData || [],
     columns,
     pageCount: totalPages,
     state: {
@@ -93,7 +94,7 @@ const TanstackTable = <T,>({
     return <SkeletonLoader columns={columns.length} rows={6} />;
   }
 
-  const hasData = data?.data && data.data.length > 0;
+  const hasData = tableData && tableData.length > 0;
 
   return (
     <div>
