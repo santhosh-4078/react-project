@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router";
+// import { Link } from "react-router";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -8,7 +8,7 @@ import { EyeCloseIcon, EyeIcon } from "../../icons";
 import Label from "../form/Label";
 import Input from "../form/input/InputField";
 // import Select from "../form/Select";
-import Checkbox from "../form/input/Checkbox";
+// import Checkbox from "../form/input/Checkbox";
 import Button from "../ui/button/Button";
 import useLoginMutation from "../../hooks/Mutations/useLoginMutation";
 import { APICONSTANT } from "../../services/config";
@@ -27,7 +27,7 @@ type SignInFormData = {
 
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
-  const [isChecked, setIsChecked] = useState(false);
+  // const [isChecked, setIsChecked] = useState(false);
 
   const {
     register,
@@ -133,18 +133,18 @@ export default function SignInForm() {
 
               {/* Keep me logged in */}
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
+                {/* <div className="flex items-center gap-3">
                   <Checkbox checked={isChecked} onChange={setIsChecked} />
                   <span className="block font-normal text-gray-700 text-theme-sm dark:text-gray-400">
                     Keep me logged in
                   </span>
-                </div>
-                <Link
+                </div> */}
+                {/* <Link
                   to="/reset-password"
                   className="text-sm text-brand-500 hover:text-brand-600 dark:text-brand-400"
                 >
                   Forgot password?
-                </Link>
+                </Link> */}
               </div>
 
               {/* Submit */}
