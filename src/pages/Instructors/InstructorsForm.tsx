@@ -47,7 +47,9 @@ export default function InstructorsForm() {
   const navigate = useNavigate();
   const location = useLocation();
   const queryClient = useQueryClient();
-  const instructor = location.state as Partial<InstructorFormData & { id: number }> | undefined;
+  const instructor = location.state as
+    | Partial<InstructorFormData & { id: number }>
+    | undefined;
   const isEditMode = !!instructor;
 
   const schema: yup.ObjectSchema<InstructorFormData> = yup.object({
@@ -59,16 +61,37 @@ export default function InstructorsForm() {
       .min(6, "Minimum 6 characters")
       .when([], {
         is: () => !isEditMode,
-        then: schema => schema.required("Password is required"),
+        then: (schema) => schema.required("Password is required"),
       }),
     phone: yup.string().required("Phone number is required"),
     street: yup.string().required("Street is required"),
     city: yup.string().required("City is required"),
     state: yup.string().required("State is required"),
     country: yup.string().required("Country is required"),
-    profile: yup.mixed<FileList>().test("required", "Profile image is required", (value) => !!value && value.length > 0).required(),
-    pan: yup.mixed<FileList>().test("required", "PAN file is required", (value) => !!value && value.length > 0).required(),
-    aadhar: yup.mixed<FileList>().test("required", "Aadhar file is required", (value) => !!value && value.length > 0).required(),
+    profile: yup
+      .mixed<FileList>()
+      .test(
+        "required",
+        "Profile image is required",
+        (value) => !!value && value.length > 0
+      )
+      .required(),
+    pan: yup
+      .mixed<FileList>()
+      .test(
+        "required",
+        "PAN file is required",
+        (value) => !!value && value.length > 0
+      )
+      .required(),
+    aadhar: yup
+      .mixed<FileList>()
+      .test(
+        "required",
+        "Aadhar file is required",
+        (value) => !!value && value.length > 0
+      )
+      .required(),
   });
 
   const {
@@ -92,17 +115,26 @@ export default function InstructorsForm() {
   const updateInstructor = useApiMutation("put", "/instructors");
   const isSubmitting = createInstructor.isPending || updateInstructor.isPending;
   // const { data: previewData } = useReactQuery("UPDATE_INSTRUCTOR", `id=${instructor?.id}`);
-  const { data: countries = [] } = useReactQuery<Country[]>("GET_COUNTRY", "");
-  const { data: states = [] } = useReactQuery<State[]>("GET_STATE", `country_id=${selectedCountry}`);
+  const { data: countries = [] } = useReactQuery("GET_COUNTRY", "");
+  const { data: states = [] } = useReactQuery(
+    "GET_STATE",
+    `country_id=${selectedCountry}`
+  );
 
   const countryOptions = [
     { value: "", label: "Select country" },
-    ...(countries?.datas ?? []).map((c: Country) => ({ value: String(c.id || c.country_id), label: c.name })),
+    ...(countries?.datas ?? []).map((c: Country) => ({
+      value: String(c.id || c.country_id),
+      label: c.name,
+    })),
   ];
 
   const stateOptions = [
     { value: "", label: "Select state" },
-    ...(states?.datas ?? []).map((s: State) => ({ value: String(s.id || s.zone_id), label: s.name })),
+    ...(states?.datas ?? []).map((s: State) => ({
+      value: String(s.id || s.zone_id),
+      label: s.name,
+    })),
   ];
 
   useEffect(() => {
@@ -125,9 +157,15 @@ export default function InstructorsForm() {
     let response;
     if (isEditMode && instructor?.id) {
       formData.append("id", instructor.id.toString());
-      response = await updateInstructor.mutateAsync({ url: { apiUrl: APICONSTANT.UPDATE_INSTRUCTOR }, body: formData });
+      response = await updateInstructor.mutateAsync({
+        url: { apiUrl: APICONSTANT.UPDATE_INSTRUCTOR },
+        body: formData,
+      });
     } else {
-      response = await createInstructor.mutateAsync({ url: { apiUrl: APICONSTANT.CREATE_INSTRUCTOR }, body: formData });
+      response = await createInstructor.mutateAsync({
+        url: { apiUrl: APICONSTANT.CREATE_INSTRUCTOR },
+        body: formData,
+      });
     }
 
     if (response?.success) {
@@ -137,49 +175,147 @@ export default function InstructorsForm() {
 
   return (
     <>
-
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 max-w-1xl mx-auto mt-10">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="space-y-6 max-w-1xl mx-auto mt-10"
+      >
         <div className="flex items-center gap-2">
-          <button type="button" onClick={() => navigate(-1)} className="text-gray-700 dark:text-white hover:text-brand-500 flex items-center gap-1">
+          <button
+            type="button"
+            onClick={() => navigate(-1)}
+            className="text-gray-700 dark:text-white hover:text-brand-500 flex items-center gap-1"
+          >
             <ChevronLeftIcon />
           </button>
-          <h3 className="text-base font-medium text-gray-800 dark:text-white/90">{isEditMode ? "Edit Instructor" : "Add New Instructor"}</h3>
+          <h3 className="text-base font-medium text-gray-800 dark:text-white/90">
+            {isEditMode ? "Edit Instructor" : "Add New Instructor"}
+          </h3>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div><Label>First Name *</Label><Input {...register("first_name")} error={!!errors.first_name} hint={errors.first_name?.message} /></div>
-          <div><Label>Last Name *</Label><Input {...register("last_name")} error={!!errors.last_name} hint={errors.last_name?.message} /></div>
-          <div><Label>Email *</Label><Input type="email" {...register("email_id")} error={!!errors.email_id} hint={errors.email_id?.message} /></div>
-          {!isEditMode && (<div><Label>Password *</Label><Input type="password" {...register("password")} error={!!errors.password} hint={errors.password?.message} /></div>)}
-          <div><Label>Phone *</Label><Input {...register("phone")} error={!!errors.phone} hint={errors.phone?.message} /></div>
-          <div><Label>Street *</Label><Input {...register("street")} error={!!errors.street} hint={errors.street?.message} /></div>
-          <div><Label>City *</Label><Input {...register("city")} error={!!errors.city} hint={errors.city?.message} /></div>
+          <div>
+            <Label>First Name *</Label>
+            <Input
+              {...register("first_name")}
+              error={!!errors.first_name}
+              hint={errors.first_name?.message}
+            />
+          </div>
+          <div>
+            <Label>Last Name *</Label>
+            <Input
+              {...register("last_name")}
+              error={!!errors.last_name}
+              hint={errors.last_name?.message}
+            />
+          </div>
+          <div>
+            <Label>Email *</Label>
+            <Input
+              type="email"
+              {...register("email_id")}
+              error={!!errors.email_id}
+              hint={errors.email_id?.message}
+            />
+          </div>
+          {!isEditMode && (
+            <div>
+              <Label>Password *</Label>
+              <Input
+                type="password"
+                {...register("password")}
+                error={!!errors.password}
+                hint={errors.password?.message}
+              />
+            </div>
+          )}
+          <div>
+            <Label>Phone *</Label>
+            <Input
+              {...register("phone")}
+              error={!!errors.phone}
+              hint={errors.phone?.message}
+            />
+          </div>
+          <div>
+            <Label>Street *</Label>
+            <Input
+              {...register("street")}
+              error={!!errors.street}
+              hint={errors.street?.message}
+            />
+          </div>
+          <div>
+            <Label>City *</Label>
+            <Input
+              {...register("city")}
+              error={!!errors.city}
+              hint={errors.city?.message}
+            />
+          </div>
 
           <div>
             <Label>Country *</Label>
-            <Controller name="country" control={control} rules={{ required: "Country is required" }} render={({ field }) => (
-              <Select {...field} options={countryOptions} placeholder="Select country" className="dark:bg-dark-900" />
-            )} />
-            {errors.country && <p className="text-red-500 text-sm">{errors.country.message}</p>}
+            <Controller
+              name="country"
+              control={control}
+              rules={{ required: "Country is required" }}
+              render={({ field }) => (
+                <Select
+                  {...field}
+                  options={countryOptions}
+                  placeholder="Select country"
+                  className="dark:bg-dark-900"
+                />
+              )}
+            />
+            {errors.country && (
+              <p className="text-red-500 text-sm">{errors.country.message}</p>
+            )}
           </div>
 
           <div>
             <Label>State *</Label>
-            <Controller name="state" control={control} rules={{ required: "State is required" }} render={({ field }) => (
-              <Select {...field} options={stateOptions} placeholder="Select state" className="dark:bg-dark-900" />
-            )} />
-            {errors.state && <p className="text-red-500 text-sm">{errors.state.message}</p>}
+            <Controller
+              name="state"
+              control={control}
+              rules={{ required: "State is required" }}
+              render={({ field }) => (
+                <Select
+                  {...field}
+                  options={stateOptions}
+                  placeholder="Select state"
+                  className="dark:bg-dark-900"
+                />
+              )}
+            />
+            {errors.state && (
+              <p className="text-red-500 text-sm">{errors.state.message}</p>
+            )}
           </div>
 
-          <div><Label>Profile Image *</Label><FileInput {...register("profile")} /></div>
-          <div><Label>PAN Document *</Label><FileInput {...register("pan")} /></div>
-          <div><Label>Aadhar Document *</Label><FileInput {...register("aadhar")} /></div>
+          <div>
+            <Label>Profile Image *</Label>
+            <FileInput {...register("profile")} />
+          </div>
+          <div>
+            <Label>PAN Document *</Label>
+            <FileInput {...register("pan")} />
+          </div>
+          <div>
+            <Label>Aadhar Document *</Label>
+            <FileInput {...register("aadhar")} />
+          </div>
         </div>
 
         <div className="md:flex justify-end w-full">
           <Button type="submit" disabled={isSubmitting}>
-            {(isSubmitting)
-              ? (isEditMode ? "Updating..." : "Submitting...")
-              : (isEditMode ? "Update Instructor" : "Submit Instructor")}
+            {isSubmitting
+              ? isEditMode
+                ? "Updating..."
+                : "Submitting..."
+              : isEditMode
+              ? "Update Instructor"
+              : "Submit Instructor"}
           </Button>
         </div>
       </form>
@@ -221,7 +357,6 @@ export default function InstructorsForm() {
           </div>
         </div>
       )}
-
     </>
   );
 }
