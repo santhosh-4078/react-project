@@ -26,7 +26,7 @@ export default function StudentPage() {
   return (
     <ComponentCard<Student>
       title="Students"
-      listAPI="viewUsers"
+      // listAPI="viewUsers"
       columns={columns}
     />
   );

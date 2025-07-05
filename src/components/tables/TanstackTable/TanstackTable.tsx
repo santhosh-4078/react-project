@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import { useState, useMemo } from "react";
 import {
   useReactTable,
   getCoreRowModel,
@@ -15,7 +15,13 @@ interface TanstackTableProps<T> {
   queryString?: string;
 }
 
-const SkeletonLoader = ({ columns, rows = 6 }: { columns: number; rows?: number }) => (
+const SkeletonLoader = ({
+  columns,
+  rows = 6,
+}: {
+  columns: number;
+  rows?: number;
+}) => (
   <table className="min-w-full">
     <thead>
       <tr>
@@ -61,11 +67,11 @@ const TanstackTable = <T,>({
     return params.toString();
   }, [page, pageSize, queryString]);
 
-  const { data, isLoading } = useReactQuery<T>(listAPI, query_string);
+  const { data, isLoading } = useReactQuery(listAPI, query_string);
   // ✅ FIXED: Read correct pagination structure
   //const totalCount = data?.pagination?.totalUsers || 0;
   const totalPages = data?.pagination?.totalPages || 1;
-  const tableData = data?.data || data?.datas
+  const tableData = data?.data || data?.datas;
   console.log("data", data);
 
   const table = useReactTable({
@@ -109,7 +115,10 @@ const TanstackTable = <T,>({
                       key={header.id}
                       className="border-b text-start border-gray-100 dark:border-white/[0.05] p-2 text-gray-800 dark:text-white/90 text-theme-xs"
                     >
-                      {flexRender(header.column.columnDef.header, header.getContext())}
+                      {flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
                     </th>
                   ))}
                 </tr>
@@ -123,7 +132,10 @@ const TanstackTable = <T,>({
                       key={cell.id}
                       className="px-4 py-3 text-gray-800 text-start text-theme-sm dark:text-white/90"
                     >
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
                     </td>
                   ))}
                 </tr>

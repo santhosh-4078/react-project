@@ -47,7 +47,9 @@ export default function InstructorsForm() {
   const navigate = useNavigate();
   const location = useLocation();
   const queryClient = useQueryClient();
-  const instructor = location.state as Partial<InstructorFormData & { id: number }> | undefined;
+  const instructor = location.state as
+    | Partial<InstructorFormData & { id: number }>
+    | undefined;
   const isEditMode = !!instructor;
 
   const { data: previewData } = useReactQuery("UPDATE_INSTRUCTOR", `id=${instructor?.id}`);
