@@ -12,6 +12,7 @@ import Input from "../form/input/InputField";
 import Button from "../ui/button/Button";
 import useLoginMutation from "../../hooks/Mutations/useLoginMutation";
 import { APICONSTANT } from "../../services/config";
+import Loader from "../loader/Loader";
 
 // ✅ Only email and password validation
 const schema = yup.object().shape({
@@ -149,8 +150,14 @@ export default function SignInForm() {
 
               {/* Submit */}
               <div>
-                <Button className="w-full" size="sm" type="submit">
-                  Sign in
+                <Button
+                  className="w-full flex items-center justify-center gap-2"
+                  size="sm"
+                  type="submit"
+                  disabled={loginMutation.isPending}
+                >
+                  {loginMutation.isPending && <Loader size={16} />}
+                  {loginMutation.isPending ? "Signing in..." : "Sign in"}
                 </Button>
               </div>
 
