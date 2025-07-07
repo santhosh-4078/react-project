@@ -1,4 +1,5 @@
-@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap")
+/* @import url("https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap") */
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Poppins:wght@100..900&display=swap") 
 layer(base);
 
 @import "tailwindcss";
@@ -8,6 +9,8 @@ layer(base);
 @theme {
   --font-*: initial;
   --font-outfit: Outfit, sans-serif;
+  --font-poppins: Poppins, sans-serif;
+  
 
   --breakpoint-*: initial;
   --breakpoint-2xsm: 375px;
@@ -185,8 +188,12 @@ layer(base);
   [role="button"]:not(:disabled) {
     cursor: pointer;
   }
-  body {
+  /* body {
     @apply relative font-normal font-outfit z-1 bg-gray-50;
+  } */
+  body {
+    font-family: var(--font-poppins);
+    @apply relative font-normal z-1 bg-gray-50;
   }
 }
 
@@ -775,4 +782,47 @@ span.flatpickr-weekday,
 
 .simplebar-scrollbar.simplebar-visible:before {
   @apply opacity-100;
+}
+
+/* .react-tel-input .country-list {
+  background-color: #fff;
+}
+
+.dark .react-tel-input .country-list {
+  background-color: #1f2937;
+}
+
+.react-tel-input .country-list .country:hover,
+.react-tel-input .country-list .country.highlight {
+  background-color: #f3f4f6;
+  color: #111827;
+}
+
+.dark .react-tel-input .country-list .country:hover,
+.dark .react-tel-input .country-list .country.highlight {
+  background-color: #374151;
+  color: #ffffff;
+} */
+
+.react-tel-input .selected-flag:focus  {
+  border-radius: 0.5rem;
+}
+
+.dark .react-tel-input .selected-flag:focus {
+  background-color: #374151 !important;
+  border-radius: 0.5rem;
+}
+
+.dark .react-tel-input .selected-flag:hover {
+  background-color: #374151 !important;
+  border-radius: 0.5rem;
+}
+
+.react-tel-input .flag-dropdown.open .selected-flag {
+  border-radius: 0.5rem !important
+}
+
+.dark .react-tel-input .flag-dropdown.open .selected-flag {
+  background-color: #374151 !important;
+  border-radius: 0.5rem !important;
 }
