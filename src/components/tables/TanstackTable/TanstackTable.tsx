@@ -72,8 +72,7 @@ const TanstackTable = <T,>({
   //const totalCount = data?.pagination?.totalUsers || 0;
   const totalPages = data?.pagination?.totalPages || 1;
   const tableData = data?.data || data?.datas;
-  console.log("data", data);
-
+  
   const table = useReactTable({
     data: tableData || [],
     columns,
@@ -130,7 +129,7 @@ const TanstackTable = <T,>({
                   {row.getVisibleCells().map((cell) => (
                     <td
                       key={cell.id}
-                      className="px-4 py-3 text-gray-800 text-start text-theme-sm dark:text-white/90"
+                      className="px-2 py-3 text-gray-800 text-start text-theme-sm dark:text-white/90"
                     >
                       {flexRender(
                         cell.column.columnDef.cell,

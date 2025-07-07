@@ -43,8 +43,7 @@ export default function InstructorsList() {
         queryKey: ["GET_INSTRUCTOR"]
       })
     }
-
-    // Optional: showToast("Instructor deleted successfully");
+    
   } catch (error) {
     console.error("Error deleting instructor:", error);
   }
@@ -68,6 +67,9 @@ export default function InstructorsList() {
     {
       accessorKey: "id",
       header: "ID",
+      cell: ({ row }) => (
+        <span>{row?.original?.id || "---"}</span>
+      )
     },
     {
       header: "Name",
@@ -79,10 +81,16 @@ export default function InstructorsList() {
     {
       accessorKey: "email",
       header: "Email",
+      cell: ({ row }) => (
+        <span>{row?.original?.email || "---"}</span>
+      )
     },
     {
       accessorKey: "phone",
       header: "Phone",
+      cell: ({ row }) => (
+        <span>{row?.original?.phone || "---"}</span>
+      )
     },
     {
       id: "actions",

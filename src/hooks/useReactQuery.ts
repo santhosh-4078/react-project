@@ -1,13 +1,14 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useQuery } from "@tanstack/react-query";
 import { getApiMethos } from "../services/global";
 import { APICONSTANT, APIKeys } from "../services/config";
 
-const useReactQuery = (key: APIKeys, query_string: string) => {
+const useReactQuery = (key: APIKeys, query_string: string, enabled = true) => {
   return useQuery({
     queryKey: [key, APICONSTANT[key], query_string],
     queryFn: getApiMethos,
+    enabled,
     retry: 0,
+    refetchOnMount: true,
   });
 };
 
