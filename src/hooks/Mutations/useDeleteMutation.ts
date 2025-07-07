@@ -1,6 +1,7 @@
 import { useMutation, UseMutationResult } from "@tanstack/react-query";
 import { useNavigate } from "react-router";
 import { apiMethod } from "../../services/global";
+import { showToast } from "../../Utils/Toast";
 
 export interface MutationParams {
   url: { apiUrl: string };
@@ -27,6 +28,7 @@ export default function useDeleteMutation(
     },
     onSuccess: (data) => {
       console.log("DELETE success:", data);
+      showToast(data.message || "Submitted successfully", "success");
       if (onSuccessRedirect) navigate(onSuccessRedirect);
     },
     onError: (error) => {

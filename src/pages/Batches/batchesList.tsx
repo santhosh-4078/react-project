@@ -25,13 +25,13 @@ export default function BatchesList() {
     const handleDelete = async (id: number) => {
         try {
             const apiUrl = `${APICONSTANT.DELETE_BATCHES}/${id}`;
-
             const response = await deleteMutation.mutateAsync({
                 url: { apiUrl },
             });
-            if ((response as any)?.success || (response as any)?.status === "success") {
+            if ((response as any)?.success) {
                 await queryClient.invalidateQueries({
                     queryKey: ["GET_BATCHES"]
+
                 })
             }
         } catch (error) {
@@ -59,11 +59,11 @@ export default function BatchesList() {
                 return date.toLocaleDateString("en-IN", { timeZone: "Asia/Kolkata", year: "numeric", month: "short", day: "2-digit" });
             },
         },
-         {
+        {
             header: "Start Time",
             accessorKey: "start_time",
         },
-         {
+        {
             header: "Course Name",
             accessorKey: "course_name",
         },

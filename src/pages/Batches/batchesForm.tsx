@@ -85,9 +85,21 @@ export default function BatchesForm() {
     ];
     useEffect(() => {
         if (Batches) {
-            // Map API fields to form fields for edit
+            let formattedDate = "";
+            if (Batches.start_date) {
+                const date = new Date(Batches.start_date);
+                if (!isNaN(date.getTime())) {
+                    // Convert to Asia/Kolkata and format as YYYY-MM-DD
+                    const offsetDate = new Date(date.toLocaleString("en-US", { timeZone: "Asia/Kolkata" }));
+                    const year = offsetDate.getFullYear();
+                    const month = String(offsetDate.getMonth() + 1).padStart(2, "0");
+                    const day = String(offsetDate.getDate()).padStart(2, "0");
+                    formattedDate = `${day}-${month}-${year}`;
+                }
+            }
             reset({
                 ...Batches,
+                start_date: formattedDate,
                 courses: Batches.course_id ? String(Batches.course_id) : (Batches.courses ? String(Batches.courses) : ""),
                 instructors: Batches.instructor_id ? String(Batches.instructor_id) : (Batches.instructors ? String(Batches.instructors) : ""),
                 start_time: Batches.start_time ? String(Batches.start_time).slice(0,5) : "",

@@ -47,11 +47,11 @@ const navItems: NavItem[] = [
     name: "Courses",
     path: "/courses"
   },
-  // {
-  //   icon: <BoxCubeIcon />,
-  //   name: "Batches",
-  //   path: "/batches"
-  // },
+  {
+    icon: <BoxCubeIcon />,
+    name: "Batches",
+    path: "/batches"
+  },
   // {
   //   icon: <CalenderIcon />,
   //   name: "Attendance",
