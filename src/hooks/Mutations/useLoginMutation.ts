@@ -24,7 +24,8 @@ export default function useLoginMutation() {
       if (data?.success === true) {
         setToken(data?.datas?.[0]?.token);
         showToast(data?.message || "Login successful", "success");
-        navigate("/");
+        // navigate("/");
+        navigate("/instructors")
       } else {
         console.error("Login failed: Invalid response format", data);
         showToast(data?.message || "Login failed", "error");

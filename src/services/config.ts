@@ -26,6 +26,13 @@ export const APICONSTANT = {
   CREATE_COURSE: "api/courses/create",
   UPDATE_COURSE: "api/courses/update",
   DELETE_COURSE: "api/courses/delete",
+  GET_BATCHES: "api/batches/list",
+  CREATE_BATCHES: "api/batches/create",
+  // VIEW_BATCHES: "api/batches/view",
+  UPDATE_BATCHES: "api/batches/update",
+  DELETE_BATCHES: "api/batches/delete",
+  COURSES_DROPDOWN: "api/courses/allcourses",
+  INSTRUCTOR_DROPDOWN: "api/users/allusers",
 } as const
 
 export type APIKeys = keyof typeof APICONSTANT;
