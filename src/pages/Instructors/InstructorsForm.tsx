@@ -4,17 +4,21 @@ import * as yup from "yup";
 import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { useQueryClient } from "@tanstack/react-query";
+// import { useQuery } from "@tanstack/react-query";
 
 import Label from "../../components/form/Label";
 import Input from "../../components/form/input/InputField";
 import Select from "../../components/form/Select";
+import PhoneInput from "../../components/form/group-input/React-PhoneInput2";
 import Button from "../../components/ui/button/Button";
+import FetchLocationButton from "../../components/form/Location/fetchLocationButton";
 import { ChevronLeftIcon } from "../../icons";
 import useApiMutation from "../../hooks/Mutations/useApiMutation";
 import useReactQuery from "../../hooks/useReactQuery";
 import { APICONSTANT } from "../../services/config";
 import FileInput from "../../components/form/input/FileInput";
 import { PreviewImage } from "../../components/ui/images/previewImage";
+// import { getApiMethos } from "../../services/global";
 
 interface Country {
   id: number;
@@ -38,9 +42,9 @@ type InstructorFormData = {
   city: string;
   state: string;
   country: string;
-  profile: FileList;
-  pan: FileList;
-  aadhar: FileList;
+  profile?: FileList | string;
+  pan?: FileList | string;
+  aadhar?: FileList | string;
 };
 
 export default function InstructorsForm() {
@@ -52,7 +56,17 @@ export default function InstructorsForm() {
     | undefined;
   const isEditMode = !!instructor;
 
-  const { data: previewData } = useReactQuery("UPDATE_INSTRUCTOR", `id=${instructor?.id}`);
+  const { data: previewData, refetch } = useReactQuery(
+    "VIEW_INSTRUCTOR",
+    `id=${instructor?.id}`,
+    !!isEditMode
+  );
+
+  // const { data: previewData } = useQuery({
+  //   queryKey: ["VIEW_INSTRUCTOR", `${APICONSTANT.VIEW_INSTRUCTOR}?user_group=instructor&id=${instructor?.id}`],
+  //   queryFn: getApiMethos,
+  //   enabled: !!isEditMode && !!instructor?.id,
+  // });
   const preview = previewData?.data;
 
   const schema: yup.ObjectSchema<InstructorFormData> = yup.object({
@@ -71,24 +85,30 @@ export default function InstructorsForm() {
     city: yup.string().required("City is required"),
     state: yup.string().required("State is required"),
     country: yup.string().required("Country is required"),
+
     profile: yup
       .mixed<FileList>()
-      .test("required", "Profile image is required", value =>
-        isEditMode ? true : !!value && value.length > 0
-      )
-      .required(),
+      .test("fileRequired", "Profile image is required", function (value) {
+        const hasFile = value instanceof FileList && value.length > 0;
+        const hasUrl = !!preview?.profile;
+        return isEditMode ? hasFile || hasUrl : hasFile;
+      }),
+
     pan: yup
       .mixed<FileList>()
-      .test("required", "PAN file is required", value =>
-        isEditMode ? true : !!value && value.length > 0
-      )
-      .required(),
+      .test("fileRequired", "PAN file is required", function (value) {
+        const hasFile = value instanceof FileList && value.length > 0;
+        const hasUrl = !!preview?.pan;
+        return isEditMode ? hasFile || hasUrl : hasFile;
+      }),
+
     aadhar: yup
       .mixed<FileList>()
-      .test("required", "Aadhar file is required", value =>
-        isEditMode ? true : !!value && value.length > 0
-      )
-      .required(),
+      .test("fileRequired", "Aadhar file is required", function (value) {
+        const hasFile = value instanceof FileList && value.length > 0;
+        const hasUrl = !!preview?.aadhar;
+        return isEditMode ? hasFile || hasUrl : hasFile;
+      }),
   });
 
   const {
@@ -97,6 +117,7 @@ export default function InstructorsForm() {
     reset,
     watch,
     control,
+    setValue,
     formState: { errors },
   } = useForm<InstructorFormData>({
     // resolver: yupResolver(schema),
@@ -108,6 +129,8 @@ export default function InstructorsForm() {
         pan: undefined,
         aadhar: undefined,
         password: "",
+        country: String(preview?.country ?? ""),
+        state: String(preview?.state ?? ""),
       }
       : undefined,
   });
@@ -118,13 +141,14 @@ export default function InstructorsForm() {
   const watchedAadhar = watch("aadhar");
 
   const createInstructor = useApiMutation("post", "/instructors");
-  const updateInstructor = useApiMutation("post", "/instructors");
+  const updateInstructor = useApiMutation("put", "/instructors");
   const isSubmitting = createInstructor.isPending || updateInstructor.isPending;
 
   const { data: countries = [] } = useReactQuery("GET_COUNTRY", "");
   const { data: states = [] } = useReactQuery(
     "GET_STATE",
-    `country_id=${selectedCountry}`
+    `country_id=${selectedCountry}`,
+    !!selectedCountry,
   );
 
   const countryOptions = [
@@ -144,6 +168,18 @@ export default function InstructorsForm() {
   ];
 
   useEffect(() => {
+    if (isEditMode) {
+      refetch();
+    }
+  }, [isEditMode]);
+
+  useEffect(() => {
+    if (!isEditMode) {
+      setValue("state", "");
+    }
+  }, [selectedCountry, setValue])
+
+  useEffect(() => {
     if (previewData?.success) {
       reset({
         ...preview,
@@ -151,9 +187,18 @@ export default function InstructorsForm() {
         pan: undefined,
         aadhar: undefined,
         password: "",
+        country: String(preview?.country ?? ""),
+        state: String(preview?.state ?? ""),
       });
+
+      // Set fallback string values so they exist in `data`
+      if (isEditMode) {
+        if (preview?.profile) setValue("profile", preview.profile);
+        if (preview?.pan) setValue("pan", preview.pan);
+        if (preview?.aadhar) setValue("aadhar", preview.aadhar);
+      }
     }
-  }, [previewData?.data, reset]);
+  }, [previewData?.data, reset, setValue]);
 
   const onSubmit = async (data: InstructorFormData) => {
     // try {
@@ -165,9 +210,13 @@ export default function InstructorsForm() {
     const formData = new FormData();
     formData.append("user_group", "instructor");
 
+    const imageFields = ["profile", "pan", "aadhar"];
+
     for (const [key, value] of Object.entries(data)) {
       if (value instanceof FileList && value.length > 0) {
         formData.append(key, value[0]);
+      } else if (typeof value === "string" && imageFields.includes(key)) {
+        formData.append(key, value); // fallback to preview URL
       } else {
         formData.append(key, value as string);
       }
@@ -177,7 +226,7 @@ export default function InstructorsForm() {
     if (isEditMode && instructor?.id) {
       formData.append("id", instructor.id.toString());
       response = await updateInstructor.mutateAsync({
-        url: { apiUrl: APICONSTANT.UPDATE_INSTRUCTOR },
+        url: { apiUrl: `${APICONSTANT.UPDATE_INSTRUCTOR}/${instructor?.id}` },
         body: formData,
       });
     } else {
@@ -189,6 +238,9 @@ export default function InstructorsForm() {
 
     if (response?.success) {
       await queryClient.invalidateQueries({ queryKey: ["GET_INSTRUCTOR"] });
+      await queryClient.invalidateQueries({
+        queryKey: [`GET_STATE?country_id=${selectedCountry}`],
+      });
     }
   };
 
@@ -236,17 +288,22 @@ export default function InstructorsForm() {
 
           <div>
             <Label>Phone *</Label>
-            <Input type="number" {...register("phone")} error={!!errors.phone} hint={errors.phone?.message} />
-          </div>
-
-          <div>
-            <Label>Street *</Label>
-            <Input {...register("street")} error={!!errors.street} hint={errors.street?.message} />
-          </div>
-
-          <div>
-            <Label>City *</Label>
-            <Input {...register("city")} error={!!errors.city} hint={errors.city?.message} />
+            <Controller
+              name="phone"
+              control={control}
+              rules={{ required: "Phone number is required" }}
+              render={({ field }) => (
+                <PhoneInput
+                  value={field.value}
+                  onChange={field.onChange}
+                  error={!!errors.phone}
+                  placeholder="Enter phone number"
+                />
+              )}
+            />
+            {errors.phone && (
+              <p className="text-red-500 text-sm mt-1">{errors.phone.message}</p>
+            )}
           </div>
 
           <div>
@@ -275,19 +332,87 @@ export default function InstructorsForm() {
             {errors.state && <p className="text-red-500 text-sm">{errors.state.message}</p>}
           </div>
 
+          <div className="relative">
+            <Label>City *</Label>
+            <Input
+              {...register("city")}
+              error={!!errors.city}
+              hint={errors.city?.message}
+              className="pr-28"
+            />
+            <div className="absolute right-2 top-[30px]">
+              <FetchLocationButton
+                onLocationFetched={({ city, street }) => {
+                  reset({
+                    ...watch(),
+                    city,
+                    street,
+                  });
+                }}
+              />
+            </div>
+          </div>
+
+          <div>
+            <Label>Street *</Label>
+            <Input {...register("street")} error={!!errors.street} hint={errors.street?.message} />
+          </div>
+
           <div>
             <Label>Profile Image *</Label>
-            <FileInput {...register("profile")} />
+            <Controller
+              name="profile"
+              control={control}
+              defaultValue={undefined}
+              render={({ field }) => (
+                <FileInput
+                  accept="image/*"
+                  onChange={(e) => field.onChange(e.target.files)}
+                  ref={field.ref}
+                />
+              )}
+            />
+            {errors?.profile && (
+              <p className="text-red-500 text-sm mt-1">{errors?.profile?.message}</p>
+            )}
           </div>
 
           <div>
             <Label>PAN Document *</Label>
-            <FileInput {...register("pan")} />
+            <Controller
+              name="pan"
+              control={control}
+              defaultValue={undefined}
+              render={({ field }) => (
+                <FileInput
+                  accept="image/*"
+                  onChange={(e) => field.onChange(e.target.files)}
+                  ref={field.ref}
+                />
+              )}
+            />
+            {errors?.pan && (
+              <p className="text-red-500 text-sm mt-1">{errors?.pan?.message}</p>
+            )}
           </div>
 
           <div>
             <Label>Aadhar Document *</Label>
-            <FileInput {...register("aadhar")} />
+            <Controller
+              name="aadhar"
+              control={control}
+              defaultValue={undefined}
+              render={({ field }) => (
+                <FileInput
+                  accept="image/*"
+                  onChange={(e) => field.onChange(e.target.files)}
+                  ref={field.ref}
+                />
+              )}
+            />
+            {errors?.aadhar && (
+              <p className="text-red-500 text-sm mt-1">{errors?.aadhar?.message}</p>
+            )}
           </div>
         </div>
 
@@ -320,9 +445,27 @@ export default function InstructorsForm() {
       {(watchedProfile?.[0] || watchedPan?.[0] || watchedAadhar?.[0] || isEditMode) && (
         <div className="mt-10 pt-6 border-t border-gray-300">
           <div className="flex flex-wrap gap-6 justify-start">
-            <PreviewImage file={watchedProfile?.[0]} url={preview?.profile} label="Profile Preview" />
+            {/* <PreviewImage file={watchedProfile?.[0]} url={preview?.profile} label="Profile Preview" />
             <PreviewImage file={watchedPan?.[0]} url={preview?.pan} label="PAN Preview" />
-            <PreviewImage file={watchedAadhar?.[0]} url={preview?.aadhar} label="Aadhar Preview" />
+            <PreviewImage file={watchedAadhar?.[0]} url={preview?.aadhar} label="Aadhar Preview" /> */}
+
+            <PreviewImage
+              file={watchedProfile instanceof FileList ? watchedProfile[0] : undefined}
+              url={typeof watchedProfile === "string" ? watchedProfile : preview?.profile}
+              label="Profile Preview"
+            />
+
+            <PreviewImage
+              file={watchedPan instanceof FileList ? watchedPan[0] : undefined}
+              url={typeof watchedPan === "string" ? watchedPan : preview?.pan}
+              label="PAN Preview"
+            />
+
+            <PreviewImage
+              file={watchedAadhar instanceof FileList ? watchedAadhar[0] : undefined}
+              url={typeof watchedAadhar === "string" ? watchedAadhar : preview?.aadhar}
+              label="Aadhar Preview"
+            />
           </div>
         </div>
       )}
