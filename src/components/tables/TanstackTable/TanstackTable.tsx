@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import { useState, useMemo } from "react";
 import {
   useReactTable,
   getCoreRowModel,
@@ -61,12 +61,11 @@ const TanstackTable = <T,>({
     return params.toString();
   }, [page, pageSize, queryString]);
 
-  const { data, isLoading } = useReactQuery<T>(listAPI, query_string);
+  const { data, isLoading } = useReactQuery(listAPI, query_string);
   // ✅ FIXED: Read correct pagination structure
   //const totalCount = data?.pagination?.totalUsers || 0;
   const totalPages = data?.pagination?.totalPages || 1;
   const tableData = data?.data || data?.datas
-  console.log("data", data);
 
   const table = useReactTable({
     data: tableData || [],

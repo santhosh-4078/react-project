@@ -92,8 +92,8 @@ export default function InstructorsForm() {
   const updateInstructor = useApiMutation("put", "/instructors");
   const isSubmitting = createInstructor.isPending || updateInstructor.isPending;
   // const { data: previewData } = useReactQuery("UPDATE_INSTRUCTOR", `id=${instructor?.id}`);
-  const { data: countries = [] } = useReactQuery<Country[]>("GET_COUNTRY", "");
-  const { data: states = [] } = useReactQuery<State[]>("GET_STATE", `country_id=${selectedCountry}`);
+  const { data: countries = [] } = useReactQuery("GET_COUNTRY", "");
+  const { data: states = [] } = useReactQuery("GET_STATE", `country_id=${selectedCountry}`);
 
   const countryOptions = [
     { value: "", label: "Select country" },
