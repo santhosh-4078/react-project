@@ -13,7 +13,7 @@ import { APICONSTANT } from "../../services/config";
 
 type CoursesFormData = {
   name: string;
-  description?: string;
+  description?: string  | null;
 };
 
 export default function CoursesForm() {
@@ -76,7 +76,7 @@ export default function CoursesForm() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div><Label>Course Name *</Label><Input {...register("name")} error={!!errors.name} hint={errors.name?.message} /></div>
-          <div><Label>Description *</Label><Input {...register("description")} error={!!errors.description} hint={errors.description?.message} /></div>
+          <div><Label>Description *</Label><Input {...register("description")} /></div>
         </div>
         <div className="md:flex justify-end w-full">
           <Button type="submit" disabled={isSubmitting}>

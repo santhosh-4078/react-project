@@ -16,9 +16,9 @@ import Select from "../../components/form/Select";
 
 type BatchesFormData = {
     name: string;
-    description: string;
-    location: string;
-    facility: string;
+    description?: string | null;
+    location?: string | null;
+    facility?: string | null;
     start_date: string;
     start_time: string;
     end_time: string;
