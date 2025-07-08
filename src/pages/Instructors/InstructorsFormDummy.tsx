@@ -4,6 +4,7 @@ import * as yup from "yup";
 import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { useQueryClient } from "@tanstack/react-query";
+// import { useQuery } from "@tanstack/react-query";
 
 import Label from "../../components/form/Label";
 import Input from "../../components/form/input/InputField";
@@ -17,6 +18,7 @@ import useReactQuery from "../../hooks/useReactQuery";
 import { APICONSTANT } from "../../services/config";
 import FileInput from "../../components/form/input/FileInput";
 import { PreviewImage } from "../../components/ui/images/previewImage";
+// import { getApiMethos } from "../../services/global";
 
 interface Country {
   id: number;
@@ -60,6 +62,11 @@ export default function InstructorsForm() {
     !!isEditMode
   );
 
+  // const { data: previewData } = useQuery({
+  //   queryKey: ["VIEW_INSTRUCTOR", `${APICONSTANT.VIEW_INSTRUCTOR}?user_group=instructor&id=${instructor?.id}`],
+  //   queryFn: getApiMethos,
+  //   enabled: !!isEditMode && !!instructor?.id,
+  // });
   const preview = previewData?.data;
 
   const schema: yup.ObjectSchema<InstructorFormData> = yup.object({
@@ -73,6 +80,35 @@ export default function InstructorsForm() {
         then: (schema) => schema.required("Password is required").min(6, "Minimum 6 characters"),
         otherwise: (schema) => schema.notRequired().nullable(),
       }),
+    // phone: yup.string().required("Phone number is required"),
+    // street: yup.string().required("Street is required"),
+    // city: yup.string().required("City is required"),
+    // state: yup.string().required("State is required"),
+    // country: yup.string().required("Country is required"),
+
+    // profile: yup
+    //   .mixed<FileList>()
+    //   .test("fileRequired", "Profile image is required", function (value) {
+    //     const hasFile = value instanceof FileList && value.length > 0;
+    //     const hasUrl = !!preview?.profile;
+    //     return isEditMode ? hasFile || hasUrl : hasFile;
+    //   }),
+
+    // pan: yup
+    //   .mixed<FileList>()
+    //   .test("fileRequired", "PAN file is required", function (value) {
+    //     const hasFile = value instanceof FileList && value.length > 0;
+    //     const hasUrl = !!preview?.pan;
+    //     return isEditMode ? hasFile || hasUrl : hasFile;
+    //   }),
+
+    // aadhar: yup
+    //   .mixed<FileList>()
+    //   .test("fileRequired", "Aadhar file is required", function (value) {
+    //     const hasFile = value instanceof FileList && value.length > 0;
+    //     const hasUrl = !!preview?.aadhar;
+    //     return isEditMode ? hasFile || hasUrl : hasFile;
+    //   }),
     phone: yup.string().notRequired(),
     street: yup.string().notRequired(),
     city: yup.string().notRequired(),
@@ -92,6 +128,7 @@ export default function InstructorsForm() {
     setValue,
     formState: { errors },
   } = useForm<InstructorFormData>({
+    // resolver: yupResolver(schema),
     resolver: yupResolver(schema, { abortEarly: false }),
     defaultValues: isEditMode
       ? {
@@ -170,6 +207,79 @@ export default function InstructorsForm() {
       }
     }
   }, [previewData?.data, reset, setValue]);
+
+  // const onSubmit = async (data: InstructorFormData) => {
+  //   // try {
+  //   //   const validated = await schema.validate(data, { abortEarly: false });
+  //   //   console.log("Validation Passed", validated);
+  //   // } catch (e) {
+  //   //   console.error("Validation Errors:", e);
+  //   // }
+  //   const formData = new FormData();
+  //   formData.append("user_group", "instructor");
+
+  //   const imageFields = ["profile", "pan", "aadhar"];
+
+  // Option: 1
+  //   for (const [key, value] of Object.entries(data)) {
+  //     if (value instanceof FileList && value.length > 0) {
+  //       formData.append(key, value[0]);
+  //     } else if (typeof value === "string" && imageFields.includes(key)) {
+  //       formData.append(key, value); // fallback to preview URL
+  //     } else {
+  //       formData.append(key, value as string);
+  //     }
+  //   }
+
+  // Option: 2
+  // const allKeys: (keyof InstructorFormData)[] = [
+  //   "first_name",
+  //   "last_name",
+  //   "email_id",
+  //   "password",
+  //   "phone",
+  //   "street",
+  //   "city",
+  //   "state",
+  //   "country",
+  //   "profile",
+  //   "pan",
+  //   "aadhar",
+  // ];
+
+  // for (const key of allKeys) {
+  //   const value = data[key];
+
+  //   if (value instanceof FileList && value.length > 0) {
+  //     formData.append(key, value[0].name); // 👈 pass only filename as string
+  //   } else if (typeof value === "string") {
+  //     formData.append(key, value.trim());
+  //   } else {
+  //     formData.append(key, ""); // 👈 fallback to empty string
+  //   }
+  // }
+
+  //   let response;
+  //   if (isEditMode && instructor?.id) {
+  //     formData.append("id", instructor.id.toString());
+  //     response = await updateInstructor.mutateAsync({
+  //       url: { apiUrl: `${APICONSTANT.UPDATE_INSTRUCTOR}/${instructor?.id}` },
+  //       body: formData,
+  //     });
+  //   } else {
+  //     response = await createInstructor.mutateAsync({
+  //       url: { apiUrl: APICONSTANT.CREATE_INSTRUCTOR },
+  //       body: formData,
+  //     });
+  //   }
+
+  //   if (response?.success) {
+  //     await queryClient.invalidateQueries({ queryKey: ["GET_INSTRUCTOR"] });
+  //     await queryClient.invalidateQueries({
+  //       queryKey: [`GET_STATE?country_id=${selectedCountry}`],
+  //     });
+  //   }
+  // };
 
   const onSubmit = async (data: InstructorFormData) => {
     const formData = new FormData();
@@ -283,10 +393,14 @@ export default function InstructorsForm() {
                 <PhoneInput
                   value={field.value ?? ""}
                   onChange={field.onChange}
+                  // error={!!errors.phone}
                   placeholder="Enter phone number"
                 />
               )}
             />
+            {/* {errors.phone && (
+              <p className="text-red-500 text-sm mt-1">{errors.phone.message}</p>
+            )} */}
           </div>
 
           <div>
@@ -304,6 +418,7 @@ export default function InstructorsForm() {
                 />
               )}
             />
+            {/* {errors.country && <p className="text-red-500 text-sm">{errors.country.message}</p>} */}
           </div>
 
           <div>
@@ -321,12 +436,15 @@ export default function InstructorsForm() {
                 />
               )}
             />
+            {/* {errors.state && <p className="text-red-500 text-sm">{errors.state.message}</p>} */}
           </div>
 
           <div className="relative">
             <Label>City *</Label>
             <Input
               {...register("city")}
+              // error={!!errors.city}
+              // hint={errors.city?.message}
               className="pr-28"
             />
             <div className="absolute right-2 top-[30px]">
@@ -346,6 +464,8 @@ export default function InstructorsForm() {
             <Label>Street *</Label>
             <Input
               {...register("street")}
+            // error={!!errors.street}
+            // hint={errors.street?.message}
             />
           </div>
 
@@ -363,6 +483,9 @@ export default function InstructorsForm() {
                 />
               )}
             />
+            {/* {errors?.profile && (
+              <p className="text-red-500 text-sm mt-1">{errors?.profile?.message}</p>
+            )} */}
           </div>
 
           <div>
@@ -379,6 +502,9 @@ export default function InstructorsForm() {
                 />
               )}
             />
+            {/* {errors?.pan && (
+              <p className="text-red-500 text-sm mt-1">{errors?.pan?.message}</p>
+            )} */}
           </div>
 
           <div>
@@ -395,6 +521,9 @@ export default function InstructorsForm() {
                 />
               )}
             />
+            {/* {errors?.aadhar && (
+              <p className="text-red-500 text-sm mt-1">{errors?.aadhar?.message}</p>
+            )} */}
           </div>
         </div>
 
@@ -427,6 +556,9 @@ export default function InstructorsForm() {
       {(watchedProfile?.[0] || watchedPan?.[0] || watchedAadhar?.[0] || isEditMode) && (
         <div className="mt-10 pt-6 border-t border-gray-300">
           <div className="flex flex-wrap gap-6 justify-start">
+            {/* <PreviewImage file={watchedProfile?.[0]} url={preview?.profile} label="Profile Preview" />
+            <PreviewImage file={watchedPan?.[0]} url={preview?.pan} label="PAN Preview" />
+            <PreviewImage file={watchedAadhar?.[0]} url={preview?.aadhar} label="Aadhar Preview" /> */}
 
             <PreviewImage
               file={watchedProfile instanceof FileList ? watchedProfile[0] : undefined}
