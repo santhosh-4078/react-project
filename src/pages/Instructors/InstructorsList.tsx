@@ -1,10 +1,11 @@
 import { useNavigate } from "react-router";
-import { ColumnDef } from "@tanstack/react-table";
+// import { ColumnDef } from "@tanstack/react-table";
 import { useQueryClient } from "@tanstack/react-query";
 import ComponentCard from "../../components/common/ComponentCard";
 import RowActionsMenu from "../../components/tableActions/RowActionsMenu";
 import { APICONSTANT } from "../../services/config";
 import usePostMutation from "../../hooks/Mutations/usePostMtation";
+import { ColumnWithMeta } from "../../components/tables/TanstackTable/ColumnMetaTable";
 
 type Instructors = {
   id: number;
@@ -16,7 +17,7 @@ type Instructors = {
 };
 
 const pageDetails = {
-  title: "View Instructors",
+  title: "Instructors",
   addPage: "instructors-form",
 };
 
@@ -28,28 +29,35 @@ export default function InstructorsList() {
   const deleteMutation = usePostMutation();
 
   const handleDelete = async (id: number) => {
-  try {
-    const params = new URLSearchParams();
-    params.append("user_group", "instructor");
-    params.append("id", id.toString());
+    try {
+      const params = new URLSearchParams();
+      params.append("user_group", "instructor");
+      params.append("id", id.toString());
 
-    const response = await deleteMutation.mutateAsync({
-      url: { apiUrl: APICONSTANT.DELETE_INSTRUCTOR },
-      body: params,
-    });
+      const response = await deleteMutation.mutateAsync({
+        url: { apiUrl: APICONSTANT.DELETE_INSTRUCTOR },
+        body: params,
+      });
 
-    if(response?.success) {
-      await queryClient.invalidateQueries({
-        queryKey: ["GET_INSTRUCTOR"]
-      })
+      if (response?.success) {
+        await queryClient.invalidateQueries({
+          queryKey: ["GET_INSTRUCTOR"]
+        })
+      }
+
+    } catch (error) {
+      console.error("Error deleting instructor:", error);
     }
-    
-  } catch (error) {
-    console.error("Error deleting instructor:", error);
-  }
-};
+  };
 
-  const columns: ColumnDef<Instructors>[] = [
+  const columns: ColumnWithMeta<Instructors>[] = [
+    {
+      accessorKey: "id",
+      header: "ID",
+      cell: ({ row }) => (
+        <span>{row?.original?.id || "---"}</span>
+      )
+    },
     {
       accessorKey: "profile",
       header: "Profile",
@@ -65,14 +73,11 @@ export default function InstructorsList() {
       },
     },
     {
-      accessorKey: "id",
-      header: "ID",
-      cell: ({ row }) => (
-        <span>{row?.original?.id || "---"}</span>
-      )
-    },
-    {
+      accessorKey: "name",
       header: "Name",
+      meta: {
+        showFilter: "filter_name",
+      },
       cell: ({ row }) => {
         const { first_name, last_name } = row.original;
         return `${first_name} ${last_name}`;
@@ -81,6 +86,9 @@ export default function InstructorsList() {
     {
       accessorKey: "email",
       header: "Email",
+      meta: {
+        showFilter: "filter_email",
+      },
       cell: ({ row }) => (
         <span>{row?.original?.email || "---"}</span>
       )
