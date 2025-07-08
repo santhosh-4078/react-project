@@ -8,7 +8,12 @@ import usePostMutation from "../../hooks/Mutations/usePostMtation";
 
 type Students = {
   id: number;
-  name: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone: string;
+  profile: string;
+  batch_name: string;
 };
 
 const pageDetails = {
@@ -47,8 +52,37 @@ export default function StudentsList() {
       header: "ID",
     },
     {
-      header: "Student Name",
-      accessorKey: "name",
+      accessorKey: "profile",
+      header: "Profile",
+      cell: ({ getValue }) => {
+        const url = getValue() as string;
+        return (
+          <img
+            src={url}
+            alt="Profile"
+            className="w-10 h-10 rounded-full object-cover"
+          />
+        );
+      },
+    },
+    {
+      header: "Name",
+      cell: ({ row }) => {
+        const { first_name, last_name } = row.original;
+        return `${first_name} ${last_name}`;
+      },
+    },
+    {
+      header: "Email",
+      accessorKey: "email",
+    },
+    {
+      header: "phone Number",
+      accessorKey: "phone",
+    },
+    {
+      header: "Batch Name",
+      accessorKey: "batch_name",
     },
     {
       id: "actions",
@@ -73,7 +107,7 @@ export default function StudentsList() {
     <div>
       <ComponentCard<Students>
         title={pageDetails.title}
-        listAPI="GET_COURSES"
+        listAPI="GET_STUDENTS"
         addPage={pageDetails.addPage}
         columns={columns}
       />

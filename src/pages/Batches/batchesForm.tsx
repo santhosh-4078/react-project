@@ -45,9 +45,9 @@ export default function BatchesForm() {
 
     const schema: yup.ObjectSchema<BatchesFormData> = yup.object({
         name: yup.string().required("Name is required"),
-        description: yup.string().required("Batch_Description is required"),
-        location: yup.string().required("Location is required"),
-        facility: yup.string().required("Facility is required"),
+        description: yup.string().notRequired(),
+        location: yup.string().notRequired(),
+        facility: yup.string().notRequired(),
         start_date: yup.string().required("Start Date is required"),
         start_time: yup.string().required("Start_Time is required"),
         end_time: yup.string().required("End_Time is required"),
@@ -111,12 +111,12 @@ export default function BatchesForm() {
     const onSubmit = async (data: BatchesFormData) => {
         const payload: Record<string, string> = {
             name: data.name,
-            description: data.description,
+            description: data.description || "",
             start_date: data.start_date,
             start_time: data.start_time,
             end_time: data.end_time,
-            facility: data.facility,
-            location: data.location,
+            facility: data.facility || "",
+            location: data.location || "",
             course_id: data.courses,
             instructor_id: data.instructors,
         };

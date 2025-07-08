@@ -13,7 +13,7 @@ import { APICONSTANT } from "../../services/config";
 
 type CoursesFormData = {
   name: string;
-  description: string;
+  description?: string;
 };
 
 export default function CoursesForm() {
@@ -25,7 +25,7 @@ export default function CoursesForm() {
 
   const schema: yup.ObjectSchema<CoursesFormData> = yup.object({
     name: yup.string().required("Course_Name is required"),
-    description: yup.string().required("Course_Description is required"),
+    description: yup.string().notRequired(),
   });
 
   const {
@@ -51,7 +51,7 @@ export default function CoursesForm() {
   const onSubmit = async (data: CoursesFormData) => {
     const payload: Record<string, string> = {
       name: data.name,
-      description: data.description,
+      description: data.description || "",
     };
     let response;
     if (isEditMode && courses?.id) {

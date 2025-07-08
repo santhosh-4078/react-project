@@ -10,7 +10,7 @@ import {
   HorizontaLDots,
   PieChartIcon,
   PlugInIcon,
-  // UserIcon,
+  UserIcon,
   GroupIcon,
   DocsIcon,
   // FileIcon,
@@ -32,11 +32,6 @@ const navItems: NavItem[] = [
   //   name: "Dashboard",
   //   path: "/"
   // },
-  // {
-  //   icon: <UserIcon />,
-  //   name: "Student",
-  //   path: "/student"
-  // },
   {
     icon: <GroupIcon />,
     name: "Instructors",
@@ -51,6 +46,11 @@ const navItems: NavItem[] = [
     icon: <BoxCubeIcon />,
     name: "Batches",
     path: "/batches"
+  },
+   {
+    icon: <UserIcon />,
+    name: "Student",
+    path: "/student"
   },
   // {
   //   icon: <CalenderIcon />,

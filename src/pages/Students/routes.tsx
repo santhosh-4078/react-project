@@ -2,7 +2,7 @@ import { lazy } from 'react';
 import { useRoutes } from 'react-router';
 
 const StudentsList = lazy(() => import('./studentsList'));
-const StudentsForm = lazy(() => import('./StudentsForm'));
+const StudentsForm = lazy(() => import('./studentsForm'));
 
 export default function Router() {
     const routes = useRoutes([
