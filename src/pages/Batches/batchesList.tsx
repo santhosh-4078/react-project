@@ -13,7 +13,7 @@ type Batches = {
 };
 
 const pageDetails = {
-    title: "View Batches",
+    title: "Batches",
     addPage: "batches-form",
 };
 

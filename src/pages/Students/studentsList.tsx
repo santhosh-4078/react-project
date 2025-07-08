@@ -17,7 +17,7 @@ type Students = {
 };
 
 const pageDetails = {
-  title: "View Students",
+  title: "Students",
   addPage: "students-form",
 };
 

@@ -13,7 +13,7 @@ type Courses = {
 };
 
 const pageDetails = {
-  title: "View Courses",
+  title: "Courses",
   addPage: "courses-form",
 };
 
