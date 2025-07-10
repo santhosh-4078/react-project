@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Button from "../ui/button/Button";
-import TanstackTable from "../tables/TanstackTable/TanstackTableWithFilter";
+import TanstackTable from "../tables/TanstackTable/TanstackTable";
 // import { ColumnDef } from "@tanstack/react-table";
 import { ColumnWithMeta } from "../tables/TanstackTable/ColumnMetaTable";
 import { APIKeys } from "../../services/config";

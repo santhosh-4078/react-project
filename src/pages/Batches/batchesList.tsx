@@ -31,7 +31,6 @@ export default function BatchesList() {
             if ((response as any)?.success) {
                 await queryClient.invalidateQueries({
                     queryKey: ["GET_BATCHES"]
-
                 })
             }
         } catch (error) {

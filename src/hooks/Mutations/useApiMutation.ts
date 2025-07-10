@@ -4,7 +4,7 @@ import { AxiosError } from "axios";
 import { apiMethod } from "../../services/global";
 import { showToast } from "../../Utils/Toast";
 
-type HttpMethod = "post" | "put" | "patch" | "delete";
+type HttpMethod = "post" | "put" | "patch" | "delete" | "get";
 
 interface ApiMutationParams {
   url: { apiUrl: string };

@@ -98,7 +98,7 @@ export const deleteApiMethod = async (
 
 // Generic Method for POST, PUT, PATCH, DELETE
 export const apiMethod = async (
-  method: "post" | "put" | "patch" | "delete",
+  method: "post" | "put" | "patch" | "delete" | "get",
   apiUrl: string,
   body?: Record<string, unknown> | FormData
 ) => {

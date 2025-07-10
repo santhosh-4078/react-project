@@ -162,14 +162,16 @@
 // }
 
 import { useState } from "react";
-import { useNavigate } from "react-router"; // ✅ make sure this is from react-router-dom v6+
+import { useNavigate } from "react-router"; 
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
 import { Dropdown } from "../ui/dropdown/Dropdown";
 import { clearToken } from "../../services/authService";
+import useReactQuery from "../../hooks/useReactQuery";
 
 export default function UserDropdown() {
   const [isOpen, setIsOpen] = useState(false);
-  const navigate = useNavigate(); // ✅ hook for navigation
+  const navigate = useNavigate(); 
+  const { data: profile = {} } = useReactQuery("GET_PROFILE", "");
 
   function toggleDropdown() {
     setIsOpen(!isOpen);
@@ -193,7 +195,7 @@ export default function UserDropdown() {
         <span className="mr-3 overflow-hidden rounded-full h-11 w-11">
           <img src="/images/user/owner.jpg" alt="User" />
         </span>
-        <span className="block mr-1 font-medium text-theme-sm">Musharof</span>
+        <span className="block mr-1 font-medium text-theme-sm">{profile?.first_name}</span>
         <svg
           className={`stroke-gray-500 dark:stroke-gray-400 transition-transform duration-200 ${
             isOpen ? "rotate-180" : ""

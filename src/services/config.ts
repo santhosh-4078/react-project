@@ -15,6 +15,7 @@ export const APICONSTANT = {
   LOGIN: "api/users/verifylogin",
   STUDENTS: "students",
   PROFILE: "auth/profile",
+  GET_PROFILE: "api/users/getprofile",
   GET_INSTRUCTOR: "api/users/list",
   CREATE_INSTRUCTOR: "api/users/createusers",
   VIEW_INSTRUCTOR: "api/users/viewuser",
@@ -33,6 +34,10 @@ export const APICONSTANT = {
   COURSES_DROPDOWN: "api/courses/allcourses",
   INSTRUCTOR_DROPDOWN: "api/users/allusers",
   GET_STUDENTS: "api/students/list",
+  VIEW_STUDENTS: "api/students/view",
+  CREATE_STUDENTS: "api/students/createstudent",
+  UPDATE_STUDENTS: "api/students/updatestudent",
+  DELETE_STUDENTS: "api/students/delete",
   BATCHES_DROPDOWN: "api/batches/allbatches",
 } as const
 

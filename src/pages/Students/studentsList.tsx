@@ -5,6 +5,7 @@ import ComponentCard from "../../components/common/ComponentCard";
 import RowActionsMenu from "../../components/tableActions/RowActionsMenu";
 import { APICONSTANT } from "../../services/config";
 import usePostMutation from "../../hooks/Mutations/usePostMtation";
+import useDeleteMutation from "../../hooks/Mutations/useDeleteMutation";
 
 type Students = {
   id: number;
@@ -24,21 +25,18 @@ const pageDetails = {
 export default function StudentsList() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const deleteMutation = usePostMutation();
+  const deleteMutation = useDeleteMutation();
 
   const handleDelete = async (id: number) => {
     try {
-      const params = new URLSearchParams();
-      params.append("user_group", "instructor");
-      params.append("id", id.toString());
-
+      const apiUrl = `${APICONSTANT.DELETE_STUDENTS}/${id}`;
       const response = await deleteMutation.mutateAsync({
-        url: { apiUrl: APICONSTANT.DELETE_COURSE },
-        body: params,
+        url: { apiUrl },
       });
-      if (response?.success) {
+      if ((response as any)?.success) {
         await queryClient.invalidateQueries({
-          queryKey: ["GET_COURSES"]
+          queryKey: ["GET_STUDENTS"]
+
         })
       }
     } catch (error) {

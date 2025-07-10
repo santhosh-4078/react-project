@@ -1,19 +1,15 @@
 import { useState } from "react";
-// import { Link } from "react-router";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-
 import { EyeCloseIcon, EyeIcon } from "../../icons";
 import Label from "../form/Label";
 import Input from "../form/input/InputField";
-// import Select from "../form/Select";
-// import Checkbox from "../form/input/Checkbox";
 import Button from "../ui/button/Button";
 import useLoginMutation from "../../hooks/Mutations/useLoginMutation";
 import { APICONSTANT } from "../../services/config";
 import Loader from "../loader/Loader";
-// import { Link } from "react-router";
+import useApiMutation from "../../hooks/Mutations/useApiMutation";
 
 // ✅ Only email and password validation
 const schema = yup.object().shape({
@@ -41,6 +37,7 @@ export default function SignInForm() {
   });
 
   const loginMutation = useLoginMutation();
+  const getMutation = useApiMutation("get", "/instructors");
 
   const onSubmit = async (data: SignInFormData) => {
     const payload = {
@@ -48,12 +45,17 @@ export default function SignInForm() {
       // rememberMe: isChecked,
       // role: data.role ?? "admin",
     };
-
     try {
-      await loginMutation.mutateAsync({
+      const response = await loginMutation.mutateAsync({
         url: { apiUrl: APICONSTANT.LOGIN },
         body: payload,
       });
+      if ((response as any)?.success) {
+        const apiUrl = `${APICONSTANT.GET_PROFILE}?id=1`;
+        await getMutation.mutateAsync({
+          url: { apiUrl },
+        });
+      }
     } catch (error) {
       console.error("Login failed", error);
     }
