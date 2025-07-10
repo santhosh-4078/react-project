@@ -9,9 +9,7 @@ import Button from "../ui/button/Button";
 import useLoginMutation from "../../hooks/Mutations/useLoginMutation";
 import { APICONSTANT } from "../../services/config";
 import Loader from "../loader/Loader";
-import useApiMutation from "../../hooks/Mutations/useApiMutation";
 
-// ✅ Only email and password validation
 const schema = yup.object().shape({
   email_id: yup.string().email("Invalid email").required("Email is required"),
   password: yup.string().min(6, "Minimum 6 characters").required("Password is required"),
@@ -37,7 +35,6 @@ export default function SignInForm() {
   });
 
   const loginMutation = useLoginMutation();
-  const getMutation = useApiMutation("get", "/instructors");
 
   const onSubmit = async (data: SignInFormData) => {
     const payload = {
@@ -46,16 +43,10 @@ export default function SignInForm() {
       // role: data.role ?? "admin",
     };
     try {
-      const response = await loginMutation.mutateAsync({
+      await loginMutation.mutateAsync({
         url: { apiUrl: APICONSTANT.LOGIN },
         body: payload,
       });
-      if ((response as any)?.success) {
-        const apiUrl = `${APICONSTANT.GET_PROFILE}?id=1`;
-        await getMutation.mutateAsync({
-          url: { apiUrl },
-        });
-      }
     } catch (error) {
       console.error("Login failed", error);
     }
