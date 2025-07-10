@@ -1,7 +1,7 @@
 // src/components/common/RowActionsMenu.tsx
 
 import { useState, useEffect, useRef } from "react";
-import { PencilIcon, TrashBinIcon, HorizontaLDots } from "../../icons";
+import { PencilIcon, TrashBinIcon, MoreDotIcon } from "../../icons";
 
 interface RowActionsMenuProps {
   onEdit: () => void;
@@ -30,7 +30,7 @@ const RowActionsMenu: React.FC<RowActionsMenuProps> = ({ onEdit, onDelete }) => 
         className="text-gray-500 dark:text-gray-300 hover:text-gray-700 dark:hover:text-white"
         title="Actions"
       >
-        <HorizontaLDots />
+        <MoreDotIcon />
       </button>
 
       {isOpen && (
