@@ -67,8 +67,7 @@ const TanstackTable = <T,>({
     return params.toString();
   }, [page, pageSize, queryString]);
 
-  const { data, isLoading } = useReactQuery(listAPI, query_string);
-  // ✅ FIXED: Read correct pagination structure
+  const { data, isLoading } = useReactQuery(listAPI, query_string, true, true);
   //const totalCount = data?.pagination?.totalUsers || 0;
   const totalPages = data?.pagination?.totalPages || 1;
   const tableData = data?.data || data?.datas;

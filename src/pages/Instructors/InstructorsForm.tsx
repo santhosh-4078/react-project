@@ -10,7 +10,7 @@ import Input from "../../components/form/input/InputField";
 import Select from "../../components/form/Select";
 import PhoneInput from "../../components/form/group-input/React-PhoneInput2";
 import Button from "../../components/ui/button/Button";
-import FetchLocationButton from "../../components/form/Location/fetchLocationButton";
+// import FetchLocationButton from "../../components/form/Location/fetchLocationButton";
 import { ChevronLeftIcon } from "../../icons";
 import useApiMutation from "../../hooks/Mutations/useApiMutation";
 import useReactQuery from "../../hooks/useReactQuery";
@@ -329,7 +329,7 @@ export default function InstructorsForm() {
               {...register("city")}
               className="pr-28"
             />
-            <div className="absolute right-2 top-[30px]">
+            {/* <div className="absolute right-2 top-[30px]">
               <FetchLocationButton
                 onLocationFetched={({ city, street }) => {
                   reset({
@@ -339,7 +339,7 @@ export default function InstructorsForm() {
                   });
                 }}
               />
-            </div>
+            </div> */}
           </div>
 
           <div>
