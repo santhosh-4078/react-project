@@ -165,13 +165,21 @@ import { useState } from "react";
 import { useNavigate } from "react-router"; 
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
 import { Dropdown } from "../ui/dropdown/Dropdown";
-import { clearToken } from "../../services/authService";
-import useReactQuery from "../../hooks/useReactQuery";
+import { clearToken, getUserId } from "../../services/authService";
+import { useQuery } from "@tanstack/react-query";
+import { APICONSTANT } from "../../services/config";
+import { getApiMethos } from "../../services/global";
 
 export default function UserDropdown() {
   const [isOpen, setIsOpen] = useState(false);
-  const navigate = useNavigate(); 
-  const { data: profile = {} } = useReactQuery("GET_PROFILE", "");
+  const navigate = useNavigate();
+  const userId = getUserId();
+  const { data: profileDetails = {} } = useQuery({
+    queryKey: ["profileData", `${APICONSTANT.GET_PROFILE}`, `id=${userId}`],
+    queryFn: getApiMethos,
+    enabled: !!userId,
+    retry: 0
+  })
 
   function toggleDropdown() {
     setIsOpen(!isOpen);
@@ -193,9 +201,9 @@ export default function UserDropdown() {
         className="flex items-center text-gray-700 dropdown-toggle dark:text-gray-400"
       >
         <span className="mr-3 overflow-hidden rounded-full h-11 w-11">
-          <img src="/images/user/owner.jpg" alt="User" />
+          <img src={profileDetails?.data?.profile} alt="User" />
         </span>
-        <span className="block mr-1 font-medium text-theme-sm">{profile?.first_name}</span>
+        <span className="block mr-1 font-medium text-theme-sm">{profileDetails?.data?.name}</span>
         <svg
           className={`stroke-gray-500 dark:stroke-gray-400 transition-transform duration-200 ${
             isOpen ? "rotate-180" : ""
@@ -222,10 +230,10 @@ export default function UserDropdown() {
       >
         <div>
           <span className="block font-medium text-gray-700 text-theme-sm dark:text-gray-400">
-            Musharof Chowdhury
+            {profileDetails?.data?.name}
           </span>
           <span className="mt-0.5 block text-theme-xs text-gray-500 dark:text-gray-400">
-            randomuser@pimjo.com
+            {profileDetails?.data?.email_id}
           </span>
         </div>
 

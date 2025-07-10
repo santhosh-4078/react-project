@@ -13,16 +13,20 @@ interface LoginPayload {
   password: string;
 }
 
-export const setToken = (token: string) => {
+export const setToken = (token: string, userId?: string) => {
   localStorage.setItem("token", token);
+  if (userId) {
+    localStorage.setItem("user_id", userId);
+  }
 };
 
-export const getToken = () => {
-  return localStorage.getItem("token");
-};
+export const getToken = () => localStorage.getItem("token");
+
+export const getUserId = () => localStorage.getItem("user_id");
 
 export const clearToken = () => {
   localStorage.removeItem("token");
+  localStorage.removeItem("user_id");
 };
 
 export const loginApiMethod = async (payload: {
