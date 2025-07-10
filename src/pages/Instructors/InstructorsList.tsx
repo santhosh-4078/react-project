@@ -126,6 +126,10 @@ export default function InstructorsList() {
         listAPI="GET_INSTRUCTOR"
         addPage={pageDetails.addPage}
         columns={columns}
+         queryParams={{
+          filter_name: "",
+          filter_email: "",
+        }}
       />
     </div>
   );

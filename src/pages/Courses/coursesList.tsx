@@ -81,6 +81,9 @@ export default function CoursesList() {
         listAPI="GET_COURSES"
         addPage={pageDetails.addPage}
         columns={columns}
+        queryParams={{
+          filter_name: "",
+        }}
       />
     </div>
   );

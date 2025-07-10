@@ -100,6 +100,11 @@ export default function BatchesList() {
                 listAPI="GET_BATCHES"
                 addPage={pageDetails.addPage}
                 columns={columns}
+                queryParams={{
+                    filter_batchname: "",
+                    filter_course_id: "",
+                    filter_instructor_id: "",
+                }}
             />
         </div>
     );

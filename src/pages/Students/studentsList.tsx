@@ -4,7 +4,6 @@ import { useQueryClient } from "@tanstack/react-query";
 import ComponentCard from "../../components/common/ComponentCard";
 import RowActionsMenu from "../../components/tableActions/RowActionsMenu";
 import { APICONSTANT } from "../../services/config";
-import usePostMutation from "../../hooks/Mutations/usePostMtation";
 import useDeleteMutation from "../../hooks/Mutations/useDeleteMutation";
 
 type Students = {
@@ -35,12 +34,11 @@ export default function StudentsList() {
       });
       if ((response as any)?.success) {
         await queryClient.invalidateQueries({
-          queryKey: ["GET_STUDENTS"]
-
-        })
+          queryKey: ["GET_STUDENTS"],
+        });
       }
     } catch (error) {
-      console.error("Error deleting instructor:", error);
+      console.error("Error deleting student:", error);
     }
   };
 
@@ -75,7 +73,7 @@ export default function StudentsList() {
       accessorKey: "email",
     },
     {
-      header: "phone Number",
+      header: "Phone Number",
       accessorKey: "phone",
     },
     {
@@ -86,15 +84,11 @@ export default function StudentsList() {
       id: "actions",
       header: "Actions",
       cell: ({ row }) => {
-        const Students = row.original;
+        const student = row.original;
         return (
           <RowActionsMenu
-            onEdit={() =>
-              navigate("students-form", { state: Students })
-            }
-            onDelete={() =>
-              handleDelete(Students.id)
-            }
+            onEdit={() => navigate("students-form", { state: student })}
+            onDelete={() => handleDelete(student.id)}
           />
         );
       },
@@ -108,6 +102,11 @@ export default function StudentsList() {
         listAPI="GET_STUDENTS"
         addPage={pageDetails.addPage}
         columns={columns}
+        queryParams={{
+          filter_name: "",
+          filter_email: "",
+          filter_batch_id: "",
+        }}
       />
     </div>
   );

@@ -1,7 +1,6 @@
 import { useState } from "react";
 import Button from "../ui/button/Button";
 import TanstackTable from "../tables/TanstackTable/TanstackTable";
-// import { ColumnDef } from "@tanstack/react-table";
 import { ColumnWithMeta } from "../tables/TanstackTable/ColumnMetaTable";
 import { APIKeys } from "../../services/config";
 import Input from "../form/input/InputField";
@@ -15,6 +14,9 @@ interface ComponentCardProps<T> {
   addPage?: string;
   columns?: ColumnWithMeta<T>[];
   children?: React.ReactNode;
+  data?: T[];
+  renderRow?: (item: T) => React.ReactNode;
+  queryParams?: Record<string, string | number | undefined>;
 }
 
 const ComponentCard = <T,>({
@@ -25,38 +27,64 @@ const ComponentCard = <T,>({
   columns,
   addPage,
   children,
+  data,
+  renderRow,
+  queryParams = {},
 }: ComponentCardProps<T>) => {
   const navigate = useNavigate();
-  const [search, setSearch] = useState("");
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearch(e.target.value);
+  // Create state for each query param field
+  const [filters, setFilters] = useState<Record<string, string>>(() => {
+    const initial: Record<string, string> = {};
+    Object.keys(queryParams).forEach((key) => {
+      initial[key] = queryParams[key]?.toString() ?? "";
+    });
+    return initial;
+  });
+
+  // Update filters on input change
+  const handleFilterChange = (key: string, value: string) => {
+    setFilters((prev) => ({ ...prev, [key]: value }));
   };
 
-  const handleAddPage = () => {
-    if (addPage) navigate(addPage);
-  };
-
+  // Build query string from filter state
   const params = new URLSearchParams();
-  if (search) params.set("filter_name", search);
+  Object.entries(filters).forEach(([key, value]) => {
+    if (value !== "") {
+      params.set(key, value);
+    }
+  });
   const queryString = params.toString();
 
+  // For static data filtering (if needed)
+  const filteredData = data?.filter((item) =>
+    Object.entries(filters).every(([key, val]) =>
+      JSON.stringify(item).toLowerCase().includes(val.toLowerCase())
+    )
+  );
+
+  const showSearchBar = (listAPI && columns && addPage) || (data && renderRow);
+
   return (
-    <div className={`rounded-2xl border border-gray-200 bg-white dark:bg-white/[0.03] dark:border-gray-800  ${className}`}>
-      <div className="px-6 py-5 flex justify-between items-center">
+    <div className={`rounded-2xl border border-gray-200 bg-white dark:bg-white/[0.03] dark:border-gray-800 ${className}`}>
+      <div className="px-6 py-5 flex justify-between items-start flex-wrap gap-2 sm:flex-nowrap sm:items-center sm:gap-4">
         <div>
           <h3 className="text-base font-bold text-gray-800 dark:text-white/90">{title}</h3>
           {desc && <p className="text-sm text-gray-500 dark:text-white/90">{desc}</p>}
         </div>
-        {listAPI && columns && addPage && (
-          <div className="flex items-center gap-2">
-            <Input
-              type="text"
-              placeholder="Search..."
-              value={search}
-              onChange={handleSearchChange}
-            />
-            <Button onClick={handleAddPage}>Add</Button>
+
+        {showSearchBar && (
+          <div className="flex flex-wrap items-center gap-2">
+            {Object.keys(queryParams).map((key) => (
+              <Input
+                key={key}
+                type="text"
+                placeholder={key.replace("filter_", "").replace("_", " ").toUpperCase()}
+                value={filters[key] || ""}
+                onChange={(e) => handleFilterChange(key, e.target.value)}
+              />
+            ))}
+            {addPage && <Button onClick={() => navigate(addPage)}>Add</Button>}
           </div>
         )}
       </div>
@@ -68,6 +96,12 @@ const ComponentCard = <T,>({
             columns={columns}
             queryString={queryString}
           />
+        ) : data && renderRow ? (
+          <div className="space-y-2">
+            {filteredData?.map((item, idx) => (
+              <div key={idx}>{renderRow(item)}</div>
+            ))}
+          </div>
         ) : (
           children
         )}
