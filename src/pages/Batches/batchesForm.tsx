@@ -13,6 +13,7 @@ import useApiMutation from "../../hooks/Mutations/useApiMutation";
 import { APICONSTANT } from "../../services/config";
 import useReactQuery from "../../hooks/useReactQuery";
 import Select from "../../components/form/Select";
+import TextArea from "../../components/form/input/TextArea";
 
 type BatchesFormData = {
     name: string;
@@ -143,7 +144,7 @@ export default function BatchesForm() {
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div><Label>Batch Name *</Label><Input {...register("name")} error={!!errors.name} hint={errors.name?.message} /></div>
-                    <div><Label>Description *</Label><Input {...register("description")} error={!!errors.description} hint={errors.description?.message} /></div>
+                    <div><Label>Description *</Label><TextArea {...register("description")} rows={1}/></div>
                     <div>
                         <Controller
                             name="start_date"

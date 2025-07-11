@@ -5,6 +5,7 @@ import ComponentCard from "../../components/common/ComponentCard";
 import RowActionsMenu from "../../components/tableActions/RowActionsMenu";
 import { APICONSTANT } from "../../services/config";
 import useDeleteMutation from "../../hooks/Mutations/useDeleteMutation";
+import useReactQuery from "../../hooks/useReactQuery";
 
 type Students = {
   id: number;
@@ -16,6 +17,11 @@ type Students = {
   batch_name: string;
 };
 
+interface Batches {
+  id: number;
+  text: string;
+}
+
 const pageDetails = {
   title: "Students",
   addPage: "students-form",
@@ -25,7 +31,12 @@ export default function StudentsList() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const deleteMutation = useDeleteMutation();
+  const { data: batches = [] } = useReactQuery("BATCHES_DROPDOWN", "");
 
+  const batchesOptions = [
+    { value: "", label: "Select batch" },
+    ...(batches?.datas ?? []).map((course: Batches) => ({ value: String(course.id), label: course.text })),
+  ];
   const handleDelete = async (id: number) => {
     try {
       const apiUrl = `${APICONSTANT.DELETE_STUDENTS}/${id}`;
@@ -106,6 +117,9 @@ export default function StudentsList() {
           filter_name: "",
           filter_email: "",
           filter_batch_id: "",
+        }}
+        selectOptions={{
+          filter_batch_id: batchesOptions,
         }}
       />
     </div>
