@@ -365,7 +365,7 @@ export default function StudentsForm() {
                 </div>
             </form>
 
-            {Object.keys(errors).length > 0 && (
+            {/* {Object.keys(errors).length > 0 && (
                 <div className="bg-red-50 border border-red-200 p-3 rounded text-sm text-red-700 mt-4">
                     <h4 className="font-medium mb-1">Validation Errors:</h4>
                     <ul className="list-disc list-inside space-y-1">
@@ -376,7 +376,7 @@ export default function StudentsForm() {
                         ))}
                     </ul>
                 </div>
-            )}
+            )} */}
 
             {(watchedProfile?.[0] || watchedPan?.[0] || watchedAadhar?.[0] || isEditMode) && (
                 <div className="mt-10 pt-6 border-t border-gray-300">

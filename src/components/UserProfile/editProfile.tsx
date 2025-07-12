@@ -366,7 +366,7 @@ export default function UserEditProfile() {
                                 />
                             </div>
                             <div>
-                                {Object.keys(errors).length > 0 && (
+                                {/* {Object.keys(errors).length > 0 && (
                                     <div className="bg-red-50 border border-red-200 p-3 rounded text-sm text-red-700 mt-4">
                                         <h4 className="font-medium mb-1">Validation Errors:</h4>
                                         <ul className="list-disc list-inside space-y-1">
@@ -377,7 +377,7 @@ export default function UserEditProfile() {
                                             ))}
                                         </ul>
                                     </div>
-                                )}
+                                )} */}
 
                                 {(watchedProfile?.[0]) && (
                                     <div className="flex flex-wrap gap-6 justify-start">
