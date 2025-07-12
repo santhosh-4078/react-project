@@ -9,7 +9,8 @@ export interface MutationParams {
 }
 
 export interface ApiResponse {
-  status: boolean | number;
+  status: boolean | number | string;
+  success: boolean | number | string;
   message: string;
   data?: {
     message?: string;

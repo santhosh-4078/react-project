@@ -37,6 +37,8 @@ type ProfileFormData = {
     city?: string | null;
     state?: string | null;
     country?: string | null;
+    country_name?: string | null;
+    state_name?: string | null;
     profile?: FileList | string | null;
 };
 
@@ -59,6 +61,8 @@ export default function UserEditProfile() {
         city: yup.string().notRequired(),
         state: yup.string().notRequired(),
         country: yup.string().notRequired(),
+        country_name: yup.string().notRequired(),
+        state_name: yup.string().notRequired(),
         profile: yup.mixed<FileList | string>().notRequired(),
     });
 
@@ -222,7 +226,7 @@ export default function UserEditProfile() {
                                             Country
                                         </p>
                                         <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                                            {displayProfile.country}
+                                            {displayProfile.country_name}
                                         </p>
                                     </div>
                                     <div>
@@ -230,7 +234,7 @@ export default function UserEditProfile() {
                                             State
                                         </p>
                                         <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                                            {displayProfile.state}
+                                            {displayProfile.state_name}
                                         </p>
                                     </div>
                                     <div>

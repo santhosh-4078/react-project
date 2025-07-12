@@ -15,7 +15,7 @@ import PhoneInput from "../../components/form/group-input/React-PhoneInput2";
 import { Controller } from "react-hook-form";
 import useReactQuery from "../../hooks/useReactQuery";
 import Select from "../../components/form/Select";
-import FetchLocationButton from "../../components/form/Location/fetchLocationButton";
+// import FetchLocationButton from "../../components/form/Location/fetchLocationButton";
 import { PreviewImage } from "../../components/ui/images/previewImage";
 
 interface Country {
@@ -34,12 +34,13 @@ type StudentsFormData = {
     first_name: string;
     last_name: string;
     email_id: string;
+    collor_certificate?: string | null;
     phone?: string | null;
     street?: string | null;
     city?: string | null;
     state?: string | null;
     country?: string | null;
-    batches?: string | null;
+    batch_id?: string | null;
     profile?: FileList | string | null;
     pan?: FileList | string | null;
     aadhar?: FileList | string | null;
@@ -67,7 +68,8 @@ export default function StudentsForm() {
         first_name: yup.string().required("First name is required"),
         last_name: yup.string().required("Last name is required"),
         email_id: yup.string().email("Invalid email").required("Email is required"),
-        batches: yup.string().notRequired(),
+        collor_certificate: yup.string().notRequired(),
+        batch_id: yup.string().notRequired(),
         phone: yup.string().notRequired(),
         street: yup.string().notRequired(),
         city: yup.string().notRequired(),
@@ -167,7 +169,7 @@ export default function StudentsForm() {
             }
         }
     }, [previewData?.data, reset, setValue]);
-
+    
     const onSubmit = async (data: StudentsFormData) => {
         const formData = new FormData();
         formData.append("user_group", "instructor");
@@ -176,12 +178,13 @@ export default function StudentsForm() {
         formData.append("first_name", data.first_name || "");
         formData.append("last_name", data.last_name || "");
         formData.append("email_id", data.email_id || "");
+        formData.append("collor_certificate", data.collor_certificate || "");
         formData.append("phone", data.phone || "");
         formData.append("street", data.street || "");
         formData.append("city", data.city || "");
         formData.append("state", data.state || "");
         formData.append("country", data.country || "");
-        formData.append("batches", data.country || "");
+        formData.append("batch_id", data.batch_id || "");
 
         formData.append(
             "profile",
@@ -247,7 +250,11 @@ export default function StudentsForm() {
                         <Input type="email" {...register("email_id")} error={!!errors.email_id} hint={errors.email_id?.message} />
                     </div>
                     <div>
-                        <Label>Phone *</Label>
+                        <Label>Collor Certificate </Label>
+                        <Input type="text" {...register("collor_certificate")} error={!!errors.collor_certificate} hint={errors.collor_certificate?.message} />
+                    </div>
+                    <div>
+                        <Label>Phone</Label>
                         <Controller
                             name="phone"
                             control={control}
@@ -266,7 +273,7 @@ export default function StudentsForm() {
                         )}
                     </div>
                     <div>
-                        <Label>Country *</Label>
+                        <Label>Country</Label>
                         <Controller
                             name="country"
                             control={control}
@@ -283,7 +290,7 @@ export default function StudentsForm() {
                     </div>
 
                     <div>
-                        <Label>State *</Label>
+                        <Label>State</Label>
                         <Controller
                             name="state"
                             control={control}
@@ -300,12 +307,12 @@ export default function StudentsForm() {
                     </div>
 
                     <div className="relative">
-                        <Label>City *</Label>
+                        <Label>City</Label>
                         <Input
                             {...register("city")}
                             className="pr-28"
                         />
-                        <div className="absolute right-2 top-[30px]">
+                        {/* <div className="absolute right-2 top-[30px]">
                             <FetchLocationButton
                                 onLocationFetched={({ city, street }) => {
                                     reset({
@@ -315,17 +322,28 @@ export default function StudentsForm() {
                                     });
                                 }}
                             />
-                        </div>
+                        </div> */}
                     </div>
 
                     <div>
-                        <Label>Street *</Label>
+                        <Label>Street</Label>
                         <Input
                             {...register("street")}
                         />
                     </div>
                     <div>
-                        <Label>Profile Image *</Label>
+                        <Label>Batches</Label>
+                        <Controller name="batch_id" control={control} rules={{ required: "Batch is required" }} render={({ field }) => (
+                            <Select {...field}
+                                options={batchesOptions}
+                                value={field.value ?? undefined}
+                                placeholder="Select course"
+                                className="dark:bg-dark-900" />
+                        )} />
+                        {errors.batch_id && <p className="text-red-500 text-sm">{errors.batch_id.message}</p>}
+                    </div>
+                    <div>
+                        <Label>Profile Image</Label>
                         <Controller
                             name="profile"
                             control={control}
@@ -342,19 +360,8 @@ export default function StudentsForm() {
                             <p className="text-red-500 text-sm mt-1">{errors?.profile?.message}</p>
                         )}
                     </div>
-                    <div>
-                        <Label>Batches *</Label>
-                        <Controller name="batches" control={control} rules={{ required: "Batch is required" }} render={({ field }) => (
-                            <Select {...field}
-                                options={batchesOptions}
-                                value={field.value ?? undefined}
-                                placeholder="Select course"
-                                className="dark:bg-dark-900" />
-                        )} />
-                        {errors.batches && <p className="text-red-500 text-sm">{errors.batches.message}</p>}
-                    </div>
-                    <div><Label>PAN Document *</Label><FileInput {...register("pan")} /></div>
-                    <div><Label>Aadhar Document *</Label><FileInput {...register("aadhar")} /></div>
+                    <div><Label>PAN Document</Label><FileInput {...register("pan")} /></div>
+                    <div><Label>Aadhar Document</Label><FileInput {...register("aadhar")} /></div>
                 </div>
                 <div className="md:flex justify-end w-full">
                     <Button type="submit" disabled={isSubmitting}>

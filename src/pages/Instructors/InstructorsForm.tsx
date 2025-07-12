@@ -273,7 +273,7 @@ export default function InstructorsForm() {
           )}
 
           <div>
-            <Label>Phone *</Label>
+            <Label>Phone</Label>
             <Controller
               name="phone"
               control={control}
@@ -289,7 +289,7 @@ export default function InstructorsForm() {
           </div>
 
           <div>
-            <Label>Country *</Label>
+            <Label>Country</Label>
             <Controller
               name="country"
               control={control}
@@ -306,7 +306,7 @@ export default function InstructorsForm() {
           </div>
 
           <div>
-            <Label>State *</Label>
+            <Label>State</Label>
             <Controller
               name="state"
               control={control}
@@ -323,7 +323,7 @@ export default function InstructorsForm() {
           </div>
 
           <div className="relative">
-            <Label>City *</Label>
+            <Label>City</Label>
             <Input
               {...register("city")}
               className="pr-28"
@@ -342,14 +342,14 @@ export default function InstructorsForm() {
           </div>
 
           <div>
-            <Label>Street *</Label>
+            <Label>Street</Label>
             <Input
               {...register("street")}
             />
           </div>
 
           <div>
-            <Label>Profile Image *</Label>
+            <Label>Profile Image</Label>
             <Controller
               name="profile"
               control={control}
@@ -365,7 +365,7 @@ export default function InstructorsForm() {
           </div>
 
           <div>
-            <Label>PAN Document *</Label>
+            <Label>PAN Document</Label>
             <Controller
               name="pan"
               control={control}
@@ -381,7 +381,7 @@ export default function InstructorsForm() {
           </div>
 
           <div>
-            <Label>Aadhar Document *</Label>
+            <Label>Aadhar Document</Label>
             <Controller
               name="aadhar"
               control={control}

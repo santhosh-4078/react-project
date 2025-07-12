@@ -77,7 +77,7 @@ export default function CoursesForm() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div><Label>Course Name *</Label><Input {...register("name")} error={!!errors.name} hint={errors.name?.message} /></div>
-          <div><Label>Description *</Label><TextArea {...register("description")} rows={1}/></div>
+          <div><Label>Description</Label><TextArea {...register("description")} rows={1}/></div>
         </div>
         <div className="md:flex justify-end w-full">
           <Button type="submit" disabled={isSubmitting}>

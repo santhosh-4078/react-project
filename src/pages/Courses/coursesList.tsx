@@ -46,14 +46,23 @@ export default function CoursesList() {
     {
       accessorKey: "id",
       header: "ID",
+      cell: ({ row }) => (
+        <span>{row?.original?.id || "---"}</span>
+      )
     },
     {
-      header: "Name",
       accessorKey: "name",
+      header: "Name",
+      cell: ({ row }) => (
+        <span>{row?.original?.name || "---"}</span>
+      )
     },
     {
       accessorKey: "description",
       header: "Description",
+      cell: ({ row }) => (
+        <span>{row?.original?.description || "---"}</span>
+      )
     },
     {
       id: "actions",

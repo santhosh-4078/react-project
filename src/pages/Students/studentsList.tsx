@@ -43,7 +43,7 @@ export default function StudentsList() {
       const response = await deleteMutation.mutateAsync({
         url: { apiUrl },
       });
-      if ((response as any)?.success) {
+      if (response?.success) {
         await queryClient.invalidateQueries({
           queryKey: ["GET_STUDENTS"],
         });
@@ -82,14 +82,23 @@ export default function StudentsList() {
     {
       header: "Email",
       accessorKey: "email",
+      cell: ({ row }) => (
+        <span>{row?.original?.email || "---"}</span>
+      )
     },
     {
       header: "Phone Number",
       accessorKey: "phone",
+      cell: ({ row }) => (
+        <span>{row?.original?.phone || "---"}</span>
+      )
     },
     {
       header: "Batch Name",
       accessorKey: "batch_name",
+      cell: ({ row }) => (
+        <span>{row?.original?.batch_name || "---"}</span>
+      )
     },
     {
       id: "actions",

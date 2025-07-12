@@ -11,6 +11,10 @@ type Batches = {
     id: number;
     name: string;
     description: string;
+    start_time: string;
+    course_name: string;
+    instructor_first_name: string;
+    location: string;
 };
 
 interface Courses {
@@ -51,10 +55,10 @@ export default function BatchesList() {
             const response = await deleteMutation.mutateAsync({
                 url: { apiUrl },
             });
-            if ((response as any)?.success) {
+            if (response?.success) {
                 await queryClient.invalidateQueries({
-                    queryKey: ["GET_BATCHES"]
-                })
+                    queryKey: ["GET_BATCHES"],
+                });
             }
         } catch (error) {
             console.error("Error deleting instructor:", error);
@@ -65,14 +69,20 @@ export default function BatchesList() {
         {
             accessorKey: "id",
             header: "ID",
+            cell: ({ row }) => (
+                <span>{row?.original?.id || "---"}</span>
+            )
         },
         {
-            header: "Batch Name",
             accessorKey: "name",
+            header: "Batch Name",
+            cell: ({ row }) => (
+                <span>{row?.original?.name || "---"}</span>
+            )
         },
         {
-            header: "Start Date",
             accessorKey: "start_date",
+            header: "Start Date",
             cell: ({ getValue }) => {
                 const value = getValue();
                 if (!value || typeof value !== "string") return "-";
@@ -82,20 +92,32 @@ export default function BatchesList() {
             },
         },
         {
-            header: "Start Time",
             accessorKey: "start_time",
+            header: "Start Time",
+            cell: ({ row }) => (
+                <span>{row?.original?.start_time || "---"}</span>
+            )
         },
         {
-            header: "Course Name",
             accessorKey: "course_name",
+            header: "Course Name",
+            cell: ({ row }) => (
+                <span>{row?.original?.course_name || "---"}</span>
+            )
         },
         {
-            header: "Instructor Name",
             accessorKey: "instructor_first_name",
+            header: "Instructor Name",
+            cell: ({ row }) => (
+                <span>{row?.original?.instructor_first_name || "---"}</span>
+            )
         },
         {
-            header: "Location",
             accessorKey: "location",
+            header: "Location",
+            cell: ({ row }) => (
+                <span>{row?.original?.location || "---"}</span>
+            )
         },
         {
             id: "actions",
