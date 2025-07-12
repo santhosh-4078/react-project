@@ -62,7 +62,7 @@ const ComponentCard = <T,>({
   const queryString = params.toString();
 
   const filteredData = data?.filter((item) =>
-    Object.entries(filters).every(([key, val]) =>
+    Object.entries(filters).every(([val]) =>
       JSON.stringify(item).toLowerCase().includes(val.toLowerCase())
     )
   );
@@ -86,7 +86,12 @@ const ComponentCard = <T,>({
         {showSearchBar && (
           <div className="flex flex-wrap items-center gap-2">
             {Object.keys(queryParams).map((key) => {
-              const label = key.replace("filter_", "").replace("_", " ").toUpperCase();
+              // const label = key.replace("filter_", "").replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+              const label = key
+                .split("_")
+                .slice(1)
+                .map(word => word[0].toUpperCase() + word.slice(1))
+                .join(" ");
               const options = selectOptions[key];
 
               if (options) {
@@ -94,7 +99,7 @@ const ComponentCard = <T,>({
                   <Select
                     key={key}
                     options={options}
-                    placeholder={`${label}`}
+                    placeholder={`${'Search'} ${label}`}
                     value={filters[key]}
                     onChange={(e) => handleFilterChange(key, e.target.value)}
                     className="min-w-[150px]"
@@ -106,7 +111,7 @@ const ComponentCard = <T,>({
                 <Input
                   key={key}
                   type="text"
-                  placeholder={label}
+                  placeholder={`${'Search'} ${label}`}
                   value={filters[key] || ""}
                   onChange={(e) => handleFilterChange(key, e.target.value)}
                 />

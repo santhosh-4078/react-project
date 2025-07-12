@@ -14,7 +14,7 @@ export default function UserDropdown() {
   const { data: profileDetails = {} } = useQuery({
     queryKey: ["profileData", `${APICONSTANT.GET_PROFILE}`, `id=${userId}`],
     queryFn: getApiMethos,
-    enabled: !!userId,
+    // enabled: !!userId,
     retry: 0
   })
 
@@ -80,7 +80,7 @@ export default function UserDropdown() {
               Edit profile
             </DropdownItem>
           </li>
-          <li>
+          {/* <li>
             <DropdownItem onItemClick={closeDropdown} tag="a" to="/profile">
               Account settings
             </DropdownItem>
@@ -89,7 +89,7 @@ export default function UserDropdown() {
             <DropdownItem onItemClick={closeDropdown} tag="a" to="/profile">
               Support
             </DropdownItem>
-          </li>
+          </li> */}
         </ul>
 
         <button
