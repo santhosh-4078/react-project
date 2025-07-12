@@ -47,7 +47,7 @@ const navItems: NavItem[] = [
     name: "Batches",
     path: "/batches"
   },
-   {
+  {
     icon: <UserIcon />,
     name: "Student",
     path: "/student"
@@ -302,8 +302,9 @@ const AppSidebar: React.FC = () => {
       onMouseLeave={() => setIsHovered(false)}
     >
       <div
-        className={`py-8 flex ${!isExpanded && !isHovered ? "lg:justify-center" : "justify-start"
-          }`}
+        // className={`py-8 flex ${!isExpanded && !isHovered ? "lg:justify-center" : "justify-start"
+        //   }`}
+        className={`py-8 flex items-end ${!isExpanded && !isHovered ? "lg:justify-center" : "justify-start"} gap-1`}
       >
         <Link to="/instructors">
           {isExpanded || isHovered || isMobileOpen ? (
@@ -338,6 +339,11 @@ const AppSidebar: React.FC = () => {
             />
           )}
         </Link>
+        {(isExpanded || isHovered || isMobileOpen) && (
+          <h4 className="text-lg font-bold text-gray-800 dark:text-white/90">
+            LeadingEdge
+          </h4>
+        )}
       </div>
       <div className="flex flex-col overflow-y-auto duration-300 ease-linear no-scrollbar">
         <nav className="mb-6">
